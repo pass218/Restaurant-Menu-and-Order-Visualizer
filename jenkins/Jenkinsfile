@@ -1,0 +1,279 @@
+// ==============================================================================
+// Declarative Jenkinsfile: Restaurant Menu & Order Visualizer
+// Target Cloud: AWS (ap-south-1) | Target Registry: Docker Hub
+// ==============================================================================
+
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '5'))
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+
+    triggers {
+        // Automatically triggers on GitHub webhook pushes and PR events
+        githubPush()
+    }
+
+    parameters {
+        string(
+            name: 'DOCKER_IMAGE_NAME',
+            defaultValue: 'devopsengineer/restaurant-menu-order-visualizer',
+            description: 'Docker Hub repository target: <username>/<repository>'
+        )
+        string(
+            name: 'K8S_NAMESPACE',
+            defaultValue: 'restaurant-app',
+            description: 'Kubernetes namespace for deployment'
+        )
+        booleanParam(
+            name: 'ENFORCE_TRIVY_FAIL',
+            defaultValue: false,
+            description: 'Fail build if Trivy detects CRITICAL vulnerabilities'
+        )
+    }
+
+    environment {
+        DOCKERHUB_CREDS_ID  = 'dockerhub-credentials'
+        KUBECONFIG_CREDS_ID = 'k8s-kubeconfig'
+        AWS_REGION          = 'ap-south-1'
+        EKS_CLUSTER_NAME    = 'restaurant-cluster'
+        CI                  = 'true'
+        SHORT_GIT_SHA       = ''
+        IMAGE_TAG           = ''
+    }
+
+    stages {
+        // ----------------------------------------------------------------------
+        // STAGE 1: Checkout Source Code
+        // ----------------------------------------------------------------------
+        stage('Checkout') {
+            steps {
+                script {
+                    echo "Checking out repository source code..."
+                    checkout scm
+
+                    // Extract 7-character Git commit hash
+                    env.SHORT_GIT_SHA = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.IMAGE_TAG = "${BUILD_NUMBER}-${env.SHORT_GIT_SHA}"
+                    
+                    echo "=========================================================="
+                    echo " Pipeline Build   : #${BUILD_NUMBER}"
+                    echo " Target Branch    : ${env.BRANCH_NAME ?: env.GIT_BRANCH}"
+                    echo " Git Commit SHA   : ${env.SHORT_GIT_SHA}"
+                    echo " Docker Image Tag : ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}"
+                    echo "=========================================================="
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 2: Install Node Dependencies
+        // ----------------------------------------------------------------------
+        stage('Install Dependencies') {
+            steps {
+                echo "Installing npm dependencies in clean, reproducible mode..."
+                dir('app') {
+                    sh 'node --version'
+                    sh 'npm --version'
+                    sh 'npm ci'
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 3: Lint & Unit Tests with JUnit Reporting
+        // ----------------------------------------------------------------------
+        stage('Lint and Unit Tests') {
+            steps {
+                echo "Running automated unit test suite with Jest..."
+                dir('app') {
+                    // Executes tests and writes junit.xml report
+                    sh 'npm run test:ci'
+                }
+            }
+            post {
+                always {
+                    // Publish test results in Jenkins UI dashboard
+                    junit allowEmptyResults: true, testResults: 'app/junit.xml'
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 4: Docker Build
+        // ----------------------------------------------------------------------
+        stage('Docker Build') {
+            steps {
+                script {
+                    echo "Building multi-stage hardened Docker image..."
+                    sh """
+                        docker build \
+                            -f docker/Dockerfile \
+                            --build-arg BUILD_DATE=\$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+                            --build-arg VCS_REF=${env.SHORT_GIT_SHA} \
+                            -t ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG} \
+                            -t ${params.DOCKER_IMAGE_NAME}:latest \
+                            .
+                    """
+                    echo "Verifying local Docker image size..."
+                    sh "docker images ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}"
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 5: Security Scan of Image (Trivy)
+        // ----------------------------------------------------------------------
+        stage('Security Scan (Trivy)') {
+            steps {
+                script {
+                    echo "Running Trivy vulnerability security scanner..."
+                    // Format table report for console logs
+                    sh """
+                        trivy image \
+                            --severity HIGH,CRITICAL \
+                            --format table \
+                            ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    """
+
+                    // Generate structured JSON report for archiving
+                    sh """
+                        trivy image \
+                            --severity HIGH,CRITICAL \
+                            --format json \
+                            --output trivy-results.json \
+                            ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    """
+
+                    // Optionally break build if CRITICAL vulnerabilities exist
+                    if (params.ENFORCE_TRIVY_FAIL) {
+                        sh """
+                            trivy image \
+                                --exit-code 1 \
+                                --severity CRITICAL \
+                                ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                        """
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'trivy-results.json', allowEmptyArchive: true
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 6: Push Image to Docker Hub
+        // ----------------------------------------------------------------------
+        stage('Push to Docker Hub') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                }
+            }
+            steps {
+                script {
+                    echo "Authenticating and pushing image to Docker Hub..."
+                    withCredentials([usernamePassword(
+                        credentialsId: "${env.DOCKERHUB_CREDS_ID}",
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_PASS'
+                    )]) {
+                        sh 'echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin'
+                        sh "docker push ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}"
+                        sh "docker push ${params.DOCKER_IMAGE_NAME}:latest"
+                        sh 'docker logout'
+                    }
+                    echo "Docker Hub push complete: ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}"
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // STAGE 7: Deploy to Kubernetes (Production: Only on main branch)
+        // ----------------------------------------------------------------------
+        stage('Deploy to Kubernetes') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    echo "Starting zero-downtime deployment to Kubernetes (${env.AWS_REGION})..."
+                    withCredentials([file(credentialsId: "${env.KUBECONFIG_CREDS_ID}", variable: 'KUBECONFIG')]) {
+                        // Apply baseline cluster manifests
+                        sh "kubectl apply -f k8s/00-namespace.yaml"
+                        sh "kubectl apply -f k8s/01-configmap.yaml"
+                        sh "kubectl apply -f k8s/03-service.yaml"
+                        sh "kubectl apply -f k8s/04-ingress.yaml"
+                        sh "kubectl apply -f k8s/05-hpa.yaml"
+                        sh "kubectl apply -f k8s/06-pdb.yaml"
+
+                        // Deploy updated image to Deployment
+                        sh """
+                            kubectl set image deployment/restaurant-menu-deployment \
+                                restaurant-menu=${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG} \
+                                -n ${params.K8S_NAMESPACE} \
+                                --record
+                        """
+
+                        // Rollout verification with automated rollback on failure
+                        try {
+                            echo "Monitoring rolling update status (timeout: 180s)..."
+                            sh """
+                                kubectl rollout status deployment/restaurant-menu-deployment \
+                                    -n ${params.K8S_NAMESPACE} \
+                                    --timeout=180s
+                            """
+                            echo "Rollout succeeded! Active pods:"
+                            sh "kubectl get pods -n ${params.K8S_NAMESPACE} -l app=restaurant-menu -o wide"
+                        } catch (Exception err) {
+                            echo "=========================================================="
+                            echo "WARNING: Deployment rollout failed or timed out!"
+                            echo "Triggering automated rollback to previous revision..."
+                            echo "=========================================================="
+                            sh "kubectl rollout undo deployment/restaurant-menu-deployment -n ${params.K8S_NAMESPACE}"
+                            sh "kubectl rollout status deployment/restaurant-menu-deployment -n ${params.K8S_NAMESPACE}"
+                            error("Deployment rollout aborted. Reverted to previous stable revision: ${err.message}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // STAGE 8: Post-Build Notifications & Cleanup
+    // --------------------------------------------------------------------------
+    post {
+        always {
+            echo "Cleaning up build workspace..."
+            cleanWs deleteDirs: true, notFailBuild: true
+        }
+        success {
+            script {
+                echo "=========================================================="
+                echo " [SUCCESS] Pipeline completed successfully!"
+                echo " Image Deployed : ${params.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}"
+                echo " Target Cluster : AWS EKS (${env.AWS_REGION}) / ${params.K8S_NAMESPACE}"
+                echo "=========================================================="
+            }
+        }
+        failure {
+            script {
+                echo "=========================================================="
+                echo " [FAILURE] Pipeline build failed on branch ${env.BRANCH_NAME}"
+                echo " Check logs above for specific failure details."
+                echo "=========================================================="
+            }
+        }
+        unstable {
+            echo "[UNSTABLE] Pipeline succeeded with warnings or test regressions."
+        }
+    }
+}

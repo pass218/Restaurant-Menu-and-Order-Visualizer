@@ -1,0 +1,35 @@
+# ==============================================================================
+# Sample Terraform Variables Configuration File
+# Copy this file to 'terraform.tfvars' and customize your values.
+# Target Cloud: AWS (ap-south-1 - Mumbai)
+# ==============================================================================
+
+aws_region   = "ap-south-1"
+project_name = "restaurant-menu"
+environment  = "production"
+
+# VPC Network Layout across 2 Availability Zones
+vpc_cidr             = "10.0.0.0/16"
+availability_zones   = ["ap-south-1a", "ap-south-1b"]
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
+
+# EC2 Compute Sizes
+jenkins_instance_type = "t3.medium"
+ansible_instance_type = "t3.small"
+
+# EKS Cluster Settings
+cluster_name        = "restaurant-cluster"
+cluster_version     = "1.30"
+node_instance_types = ["t3.medium"]
+node_desired_size   = 2
+node_min_size       = 2
+node_max_size       = 4
+
+# Security: Restrict SSH to your corporate / home public IP address
+admin_cidr_blocks = [
+  "0.0.0.0/0" # Replace with your IP, e.g. "203.0.113.45/32" for strict security
+]
+
+# Paste your public SSH key here (or reference ~/.ssh/id_rsa.pub)
+ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGtV+xVbKDevOpsPlaceholderKeyForDemoAccessOnly devops@aws"

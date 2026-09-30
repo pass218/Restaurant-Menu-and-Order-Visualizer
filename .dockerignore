@@ -1,0 +1,52 @@
+# ==============================================================================
+# Docker Build Context Ignore Rules
+# ==============================================================================
+
+# Git & GitHub metadata
+.git/
+.github/
+.gitignore
+
+# Infrastructure & Automation Directories
+terraform/
+ansible/
+jenkins/
+k8s/
+
+# Documentation & Markdown
+*.md
+README.md
+
+# Dependencies & Test Coverage Artifacts
+node_modules/
+app/node_modules/
+coverage/
+app/coverage/
+.nyc_output/
+*.log
+
+# Sensitive Credentials & Keys
+*.pem
+*.key
+*.cer
+*.crt
+*.pfx
+*.p12
+*.vault_pass
+secrets.yml
+vault-pass.txt
+id_rsa
+id_ed25519
+.env*
+
+# Terraform local state
+**/.terraform/
+*.tfstate*
+
+# OS and Editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

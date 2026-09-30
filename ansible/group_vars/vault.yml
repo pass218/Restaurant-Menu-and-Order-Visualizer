@@ -1,0 +1,19 @@
+# ==============================================================================
+# Ansible Vault: Sensitive Credentials & Secret Variables
+# Encrypt this file with: ansible-vault encrypt group_vars/vault.yml
+# View/Edit this file with: ansible-vault edit group_vars/vault.yml
+# ==============================================================================
+
+# Docker Hub Registry Credentials
+vault_dockerhub_username: "devopsengineer"
+vault_dockerhub_token: "dckr_pat_SECRET_DOCKER_HUB_ACCESS_TOKEN_SAMPLE"
+
+# GitHub Webhook HMAC Secret
+vault_github_webhook_secret: "a7b9c1d2e3f405162738495a6b7c8d9e"
+
+# Kubernetes Service Account Token (if needed)
+vault_k8s_api_token: "eyJhbGciOiJSUzI1NiIsImtpZCI6InNhbXBsZS10b2tlbiJ9..."
+
+# Database / Backend Credentials (if stateful tier is added)
+vault_db_username: "restaurant_admin"
+vault_db_password: "SuperSecureProductionPassword_2026!"

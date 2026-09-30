@@ -1,0 +1,21 @@
+---
+# ==============================================================================
+# Role: app_config - Tasks
+# Jinja2 Template Management & Ansible Vault Secret Integration
+# ==============================================================================
+
+- name: Create local output directory for rendered Kubernetes secrets
+  ansible.builtin.file:
+    path: /tmp/rendered_k8s_manifests
+    state: directory
+    mode: '0700'
+  tags: [app_config, templates]
+
+- name: Render Kubernetes Secret manifest from Jinja2 template using Ansible Vault
+  ansible.builtin.template:
+    src: app-secret.yaml.j2
+    dest: /tmp/rendered_k8s_manifests/01-app-secret.yaml
+    owner: ubuntu
+    group: ubuntu
+    mode: '0600'
+  tags: [app_config, templates]

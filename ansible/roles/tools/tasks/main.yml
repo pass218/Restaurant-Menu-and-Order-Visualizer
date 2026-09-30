@@ -1,0 +1,97 @@
+---
+# ==============================================================================
+# Role: tools - Tasks
+# DevOps Toolchain: Node.js, AWS CLI v2, kubectl, Helm, and Trivy
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Node.js 20.x & NPM
+# ------------------------------------------------------------------------------
+- name: Add NodeSource Node.js 20.x official repository
+  ansible.builtin.shell: curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  args:
+    creates: /etc/apt/sources.list.d/nodesource.list
+  tags: [tools, nodejs]
+
+- name: Install Node.js runtime and npm
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  tags: [tools, nodejs]
+
+# ------------------------------------------------------------------------------
+# AWS CLI v2
+# ------------------------------------------------------------------------------
+- name: Download AWS CLI v2 zip package
+  ansible.builtin.get_url:
+    url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+    dest: /tmp/awscliv2.zip
+    mode: '0644'
+  tags: [tools, awscli]
+
+- name: Unarchive AWS CLI v2 installer
+  ansible.builtin.unarchive:
+    src: /tmp/awscliv2.zip
+    dest: /tmp
+    remote_src: yes
+    creates: /tmp/aws/install
+  tags: [tools, awscli]
+
+- name: Run AWS CLI v2 installation script
+  ansible.builtin.command: /tmp/aws/install --update
+  args:
+    creates: /usr/local/bin/aws
+  tags: [tools, awscli]
+
+# ------------------------------------------------------------------------------
+# kubectl (Kubernetes CLI)
+# ------------------------------------------------------------------------------
+- name: Download official kubectl binary
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: '0755'
+    owner: root
+    group: root
+  tags: [tools, kubectl]
+
+# ------------------------------------------------------------------------------
+# Helm 3 (Kubernetes Package Manager)
+# ------------------------------------------------------------------------------
+- name: Download Helm 3 installation script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    dest: /tmp/get_helm.sh
+    mode: '0755'
+  tags: [tools, helm]
+
+- name: Execute Helm 3 installation script
+  ansible.builtin.command: /tmp/get_helm.sh
+  args:
+    creates: /usr/local/bin/helm
+  tags: [tools, helm]
+
+# ------------------------------------------------------------------------------
+# Trivy (Container Security Scanner)
+# ------------------------------------------------------------------------------
+- name: Add Aqua Security GPG key for Trivy
+  ansible.builtin.get_url:
+    url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+    dest: /usr/share/keyrings/trivy.asc
+    mode: '0644'
+  tags: [tools, trivy]
+
+- name: Add Aqua Security Trivy APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/trivy.asc] https://aquasecurity.github.io/trivy-repo/deb {{ ansible_distribution_release }} main"
+    state: present
+    filename: trivy
+  tags: [tools, trivy]
+
+- name: Install Trivy vulnerability scanner
+  ansible.builtin.apt:
+    name: trivy
+    state: present
+    update_cache: yes
+  tags: [tools, trivy]

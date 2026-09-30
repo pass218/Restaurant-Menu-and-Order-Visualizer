@@ -1,0 +1,16 @@
+# ==============================================================================
+# Managed by Ansible: /etc/default/jenkins
+# Service: Restaurant Menu & Order Visualizer CI/CD
+# ==============================================================================
+
+NAME=jenkins
+JAVA_ARGS="-Djava.awt.headless=true -Xmx2048m -XX:+UseG1GC"
+PIDFILE=/var/run/$NAME/$NAME.pid
+JENKINS_USER=$NAME
+JENKINS_GROUP=$NAME
+JENKINS_WAR=/usr/share/$NAME/$NAME.war
+JENKINS_HOME={{ jenkins_home_dir }}
+RUN_STANDALONE=true
+HTTP_PORT={{ jenkins_http_port }}
+PREFIX=/$NAME
+JENKINS_ARGS="--webroot=/var/cache/$NAME/war --httpPort=$HTTP_PORT"

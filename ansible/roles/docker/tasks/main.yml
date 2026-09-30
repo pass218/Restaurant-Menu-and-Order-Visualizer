@@ -1,0 +1,88 @@
+---
+# ==============================================================================
+# Role: docker - Tasks
+# Docker CE Engine & Containerd CRI Runtime Installation
+# ==============================================================================
+
+- name: Create keyrings directory for apt sources
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags: [docker]
+
+- name: Download Docker official GPG key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+  tags: [docker]
+
+- name: Add Docker official APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  tags: [docker]
+
+- name: Install Docker CE, CLI, and Containerd packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+  notify: restart docker
+  tags: [docker]
+
+- name: Ensure containerd configuration directory exists
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: '0755'
+  tags: [docker]
+
+- name: Generate containerd configuration with SystemdCgroup enabled
+  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+  notify: restart containerd
+  tags: [docker]
+
+- name: Enable SystemdCgroup in containerd config (Required by K8s)
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+  notify: restart containerd
+  tags: [docker]
+
+- name: Deploy hardened Docker daemon configuration
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "50m",
+          "max-file": "3"
+        },
+        "storage-driver": "overlay2"
+      }
+    mode: '0644'
+  notify: restart docker
+  tags: [docker]
+
+- name: Ensure Docker and containerd services are enabled and running
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - containerd
+    - docker
+  tags: [docker]

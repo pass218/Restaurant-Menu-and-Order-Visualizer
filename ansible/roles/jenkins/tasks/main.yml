@@ -1,0 +1,76 @@
+---
+# ==============================================================================
+# Role: jenkins - Tasks
+# Jenkins LTS Controller Installation & Docker Integration
+# ==============================================================================
+
+- name: Install OpenJDK 17 (Jenkins runtime requirement)
+  ansible.builtin.apt:
+    name: "{{ java_package }}"
+    state: present
+    update_cache: yes
+  tags: [jenkins, java]
+
+- name: Download Jenkins repository official GPG key
+  ansible.builtin.get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+    mode: '0644'
+  tags: [jenkins]
+
+- name: Add Jenkins LTS official APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+    state: present
+    filename: jenkins
+  tags: [jenkins]
+
+- name: Install Jenkins LTS package
+  ansible.builtin.apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+  tags: [jenkins]
+
+- name: Add jenkins system user to docker group (Permits Docker execution)
+  ansible.builtin.user:
+    name: jenkins
+    groups: docker
+    append: yes
+  notify: restart jenkins
+  tags: [jenkins, docker]
+
+- name: Deploy custom Jenkins environment configuration template
+  ansible.builtin.template:
+    src: jenkins.default.j2
+    dest: /etc/default/jenkins
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart jenkins
+  tags: [jenkins]
+
+- name: Create systemd override directory for Jenkins
+  ansible.builtin.file:
+    path: /etc/systemd/system/jenkins.service.d
+    state: directory
+    mode: '0755'
+  tags: [jenkins]
+
+- name: Set Jenkins listening port via systemd override
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/jenkins.service.d/override.conf
+    content: |
+      [Service]
+      Environment="JENKINS_PORT={{ jenkins_http_port }}"
+    mode: '0644'
+  notify: restart jenkins
+  tags: [jenkins]
+
+- name: Ensure Jenkins service is enabled and started
+  ansible.builtin.systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags: [jenkins]

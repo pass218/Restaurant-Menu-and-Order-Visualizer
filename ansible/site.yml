@@ -1,0 +1,64 @@
+---
+# ==============================================================================
+# Master Site Playbook: Restaurant Menu & Order Visualizer
+# Orchestrates roles across AWS EC2 and Kubernetes nodes
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Play 1: Base Configuration & OS Hardening for All Hosts
+# ------------------------------------------------------------------------------
+- name: Apply common OS configuration and security baselines
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/vault.yml
+  roles:
+    - role: common
+      tags: [common]
+
+# ------------------------------------------------------------------------------
+# Play 2: Container Runtime & DevOps Toolchain on CI/CD Nodes
+# ------------------------------------------------------------------------------
+- name: Provision Docker, Containerd, and DevOps Toolchain
+  hosts: ci_cd
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/vault.yml
+  roles:
+    - role: docker
+      tags: [docker]
+    - role: tools
+      tags: [tools]
+
+# ------------------------------------------------------------------------------
+# Play 3: Jenkins Controller Setup & Secrets Configuration
+# ------------------------------------------------------------------------------
+- name: Configure Jenkins Controller and Application Secrets
+  hosts: jenkins_servers
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/vault.yml
+  roles:
+    - role: jenkins
+      tags: [jenkins]
+    - role: app_config
+      tags: [app_config]
+
+# ------------------------------------------------------------------------------
+# Play 4: Self-Managed Kubernetes Worker Nodes (Optional for Kubeadm)
+# ------------------------------------------------------------------------------
+- name: Configure Kubernetes Worker Node Prerequisites
+  hosts: k8s_nodes
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - role: docker
+      tags: [docker, k8s_nodes]

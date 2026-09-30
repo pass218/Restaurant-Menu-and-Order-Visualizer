@@ -1,0 +1,37 @@
+# ==============================================================================
+# Global Playbook Variables: Package Versions & Configurations
+# ==============================================================================
+
+# Target Cloud & Region
+aws_region: "ap-south-1"
+eks_cluster_name: "restaurant-cluster"
+environment: "production"
+
+# Software Component Versions
+java_package: "openjdk-17-jdk"
+nodejs_version: "20.x"
+kubectl_version: "v1.30.0"
+helm_version: "v3.15.2"
+
+# Jenkins Configuration
+jenkins_http_port: 8080
+jenkins_home_dir: "/var/lib/jenkins"
+jenkins_plugins:
+  - git
+  - github
+  - workflow-aggregator
+  - docker-workflow
+  - credentials-binding
+  - kubernetes-cli
+  - junit
+  - ansicolor
+  - ws-cleanup
+
+# Container Runtime Settings
+containerd_config_path: "/etc/containerd/config.toml"
+docker_daemon_cgroup: "systemd"
+
+# Application Settings
+app_name: "restaurant-menu-order-visualizer"
+app_namespace: "restaurant-app"
+app_port: 8080

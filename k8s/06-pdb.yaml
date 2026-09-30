@@ -1,0 +1,17 @@
+# ==============================================================================
+# Kubernetes PodDisruptionBudget (PDB) Manifest
+# High Availability Guard: Protects minimum quorum during node maintenance/drains
+# ==============================================================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: restaurant-menu-pdb
+  namespace: restaurant-app
+  labels:
+    app: restaurant-menu
+    app.kubernetes.io/name: restaurant-menu
+spec:
+  minAvailable: 2 # Ensures at least 2 pods remain online during voluntary disruptions
+  selector:
+    matchLabels:
+      app: restaurant-menu

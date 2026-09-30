@@ -1,0 +1,91 @@
+# ==============================================================================
+# Kubernetes Deployment Manifest: Restaurant Menu & Order Visualizer
+# High-Availability: 3 Replicas, Zero-Downtime RollingUpdate, Probes & Security
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-menu-deployment
+  namespace: restaurant-app
+  labels:
+    app: restaurant-menu
+    app.kubernetes.io/name: restaurant-menu
+    app.kubernetes.io/part-of: restaurant-visualizer
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1         # Provision 1 additional pod before tearing down old pods
+      maxUnavailable: 0   # Zero-downtime: Never drop below desired replica count
+  selector:
+    matchLabels:
+      app: restaurant-menu
+  template:
+    metadata:
+      labels:
+        app: restaurant-menu
+        version: "1.0.0"
+    spec:
+      # Pod-level security context satisfying Restricted PSS
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: restaurant-menu
+          image: devopsengineer/restaurant-menu-order-visualizer:latest
+          imagePullPolicy: IfNotPresent
+          
+          ports:
+            - name: http-web
+              containerPort: 8080
+              protocol: TCP
+
+          # Container-level hardening
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+
+          # Resource governance (essential for HPA metrics)
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          # Liveness Probe: Restarts unrecoverable / deadlocked pods
+          livenessProbe:
+            httpGet:
+              path: /health.html
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Readiness Probe: Routes traffic only after the pod is serving requests
+          readinessProbe:
+            httpGet:
+              path: /health.html
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 2
+
+          # Environment configuration from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: restaurant-menu-config

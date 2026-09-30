@@ -1,0 +1,22 @@
+# ==============================================================================
+# Kubernetes Service Manifest
+# Internal ClusterIP Load Balancer exposing application pods
+# ==============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurant-menu-service
+  namespace: restaurant-app
+  labels:
+    app: restaurant-menu
+    app.kubernetes.io/name: restaurant-menu
+    app.kubernetes.io/part-of: restaurant-visualizer
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: restaurant-menu

@@ -1,0 +1,17 @@
+# ==============================================================================
+# Kubernetes Namespace Manifest
+# Enforces Kubernetes Restricted Pod Security Standard (PSS)
+# ==============================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restaurant-app
+  labels:
+    name: restaurant-app
+    app.kubernetes.io/part-of: restaurant-visualizer
+    environment: production
+    # Pod Security Admission: Enforce Restricted profile (no root, capabilities dropped)
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest

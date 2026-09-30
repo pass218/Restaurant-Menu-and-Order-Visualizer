@@ -1,0 +1,23 @@
+# ==============================================================================
+# Kubernetes ConfigMap Manifest
+# Decouples application configuration from container runtime
+# ==============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restaurant-menu-config
+  namespace: restaurant-app
+  labels:
+    app.kubernetes.io/name: restaurant-menu
+    app.kubernetes.io/part-of: restaurant-visualizer
+    app.kubernetes.io/managed-by: kubectl
+data:
+  APP_ENV: "production"
+  APP_REGION: "ap-south-1"
+  APP_PORT: "8080"
+  LOG_LEVEL: "info"
+  FEATURE_FLAG_TABLE_ORDERING: "true"
+  FEATURE_FLAG_DIETARY_FILTERS: "true"
+  CURRENCY_CODE: "USD"
+  MAX_ORDER_ITEMS: "50"
+  DEFAULT_TAX_RATE: "0.08"

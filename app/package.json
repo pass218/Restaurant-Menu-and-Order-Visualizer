@@ -1,0 +1,24 @@
+{
+  "name": "restaurant-menu-order-visualizer",
+  "version": "1.0.0",
+  "description": "Production-grade Restaurant Menu & Order Visualizer Web Application",
+  "main": "logic.js",
+  "scripts": {
+    "test": "jest --runInBand --verbose",
+    "test:coverage": "jest --runInBand --coverage",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "devops",
+    "kubernetes",
+    "docker",
+    "aws",
+    "jenkins",
+    "ci-cd"
+  ],
+  "author": "Senior DevOps Engineer",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

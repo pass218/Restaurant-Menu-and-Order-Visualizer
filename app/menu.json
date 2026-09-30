@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "name": "Truffle Mushroom Arancini",
+    "category": "Starters",
+    "price": 9.50,
+    "emoji": "🧆",
+    "description": "Crispy golden risotto balls infused with black winter truffle and melted mozzarella core.",
+    "dietary": ["Vegetarian"]
+  },
+  {
+    "id": 2,
+    "name": "Avocado & Tomato Bruschetta",
+    "category": "Starters",
+    "price": 8.00,
+    "emoji": "🥖",
+    "description": "Charred sourdough topped with ripe heirloom tomatoes, smashed avocado, basil, and aged balsamic glaze.",
+    "dietary": ["Vegan", "Vegetarian"]
+  },
+  {
+    "id": 3,
+    "name": "Gluten-Free Garlic Prawns",
+    "category": "Starters",
+    "price": 12.50,
+    "emoji": "🍤",
+    "description": "Pan-seared jumbo tiger prawns tossed in garlic-infused olive oil, white wine, chili flakes, and fresh parsley.",
+    "dietary": ["Gluten-Free", "Non-Veg"]
+  },
+  {
+    "id": 4,
+    "name": "Crispy Tandoori Paneer Bites",
+    "category": "Starters",
+    "price": 9.00,
+    "emoji": "🧀",
+    "description": "Spiced cottage cheese cubes charred in tandoor spices, served with mint-coriander chutney.",
+    "dietary": ["Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 5,
+    "name": "Smoked Chicken Yakitori",
+    "category": "Starters",
+    "price": 10.50,
+    "emoji": "🍢",
+    "description": "Skewered tender chicken thigh glazed with sweet tare sauce, sesame seeds, and scallions.",
+    "dietary": ["Non-Veg"]
+  },
+  {
+    "id": 6,
+    "name": "Artisanal Margherita Pizza",
+    "category": "Mains",
+    "price": 14.50,
+    "emoji": "🍕",
+    "description": "Slow-fermented Neapolitan crust, San Marzano tomato sauce, fresh buffalo mozzarella, and sweet basil leaves.",
+    "dietary": ["Vegetarian"]
+  },
+  {
+    "id": 7,
+    "name": "Green Garden Thai Curry",
+    "category": "Mains",
+    "price": 15.00,
+    "emoji": "🍲",
+    "description": "Fragrant coconut green curry packed with bamboo shoots, baby corn, snap peas, and tofu, served with jasmine rice.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 8,
+    "name": "Grilled Atlantic Salmon",
+    "category": "Mains",
+    "price": 22.00,
+    "emoji": "🐟",
+    "description": "Herb-crusted wild Atlantic salmon fillet served over roasted asparagus and lemon-dill velouté.",
+    "dietary": ["Gluten-Free", "Non-Veg"]
+  },
+  {
+    "id": 9,
+    "name": "Prime Angus Truffle Burger",
+    "category": "Mains",
+    "price": 18.50,
+    "emoji": "🍔",
+    "description": "Handmade Angus beef patty, aged cheddar, caramelized shallots, arugula, and truffle mayo on brioche.",
+    "dietary": ["Non-Veg"]
+  },
+  {
+    "id": 10,
+    "name": "Wild Mushroom Quinoa Bowl",
+    "category": "Mains",
+    "price": 14.00,
+    "emoji": "🥗",
+    "description": "Warm organic tricolor quinoa, roasted portobello mushrooms, kale chips, avocado, and tahini-lemon dressing.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 11,
+    "name": "Molten Belgian Chocolate Cake",
+    "category": "Desserts",
+    "price": 8.50,
+    "emoji": "🍫",
+    "description": "Warm dark chocolate fondant with a luscious gooey center, dusted with Dutch cocoa.",
+    "dietary": ["Vegetarian"]
+  },
+  {
+    "id": 12,
+    "name": "Vegan Wild Berry Panna Cotta",
+    "category": "Desserts",
+    "price": 7.50,
+    "emoji": "🍓",
+    "description": "Silk coconut cream panna cotta topped with wild blackberry coulis and fresh mint.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 13,
+    "name": "Classic Venetian Tiramisu",
+    "category": "Desserts",
+    "price": 8.00,
+    "emoji": "🍰",
+    "description": "Espresso-soaked ladyfingers layered with rich mascarpone zabaglione and bittersweet cocoa.",
+    "dietary": ["Vegetarian"]
+  },
+  {
+    "id": 14,
+    "name": "Gluten-Free Almond Lemon Tart",
+    "category": "Desserts",
+    "price": 7.00,
+    "emoji": "🍋",
+    "description": "Zesty Sicilian lemon curd set in a delicate toasted almond meal crust.",
+    "dietary": ["Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 15,
+    "name": "Artisan Alphonso Mango Gelato",
+    "category": "Desserts",
+    "price": 6.50,
+    "emoji": "🍨",
+    "description": "Double-churned Alphonso mango sorbet crafted with organic cane sugar and lime zest.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 16,
+    "name": "Fresh Passionfruit Mojito",
+    "category": "Drinks",
+    "price": 6.50,
+    "emoji": "🍹",
+    "description": "Sparkling mocktail with crushed mint, lime juice, organic passionfruit pulp, and cane soda.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 17,
+    "name": "Kyoto Iced Matcha Latte",
+    "category": "Drinks",
+    "price": 5.50,
+    "emoji": "🍵",
+    "description": "Ceremonial-grade Japanese matcha whisked with velvety oat milk and vanilla bean.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 18,
+    "name": "Cold Brew Nitro Espresso",
+    "category": "Drinks",
+    "price": 5.00,
+    "emoji": "☕",
+    "description": "18-hour cold steeped single-origin Ethiopian beans infused with nitrogen for a creamy head.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 19,
+    "name": "Sicilian Blood Orange Spritz",
+    "category": "Drinks",
+    "price": 6.00,
+    "emoji": "🍊",
+    "description": "Sun-ripened blood orange extract, sparkling mineral water, rosemary sprig, and crushed ice.",
+    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+  },
+  {
+    "id": 20,
+    "name": "Spiced Karak Masala Chai",
+    "category": "Drinks",
+    "price": 4.50,
+    "emoji": "🫖",
+    "description": "Slow-brewed Assam black tea simmered with whole cardamom, ginger, cloves, and whole milk.",
+    "dietary": ["Vegetarian", "Gluten-Free"]
+  }
+]

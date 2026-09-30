@@ -1,0 +1,95 @@
+# ==============================================================================
+# Restaurant Menu & Order Visualizer - DevOps GitIgnore Configuration
+# ==============================================================================
+
+# Node / NPM
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Test & Coverage Outputs
+coverage/
+.nyc_output/
+*.lcov
+test-reports/
+junit.xml
+
+# Environment & Secrets (NEVER COMMIT SECRETS)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cer
+*.crt
+*.pfx
+*.p12
+*.vault_pass
+secrets.yml
+vault-pass.txt
+id_rsa
+id_ed25519
+
+# Terraform Artifacts & Local State
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+*.tfvars
+!terraform.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Ansible Artifacts
+*.retry
+ansible.log
+ansible-debug.log
+.ansible/
+
+# Kubernetes / Helm
+*.kubeconfig
+kubeconfig*
+!kubeconfig.example
+*.tgz
+*.lock
+
+# Docker / Container builds
+.docker/
+docker-compose.override.yml
+
+# Operating System & IDE Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts & Temporary logs
+dist/
+build/
+tmp/
+temp/
+*.log

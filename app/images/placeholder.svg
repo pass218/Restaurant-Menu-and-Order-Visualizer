@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A0E17" />
+      <stop offset="50%" stop-color="#800020" />
+      <stop offset="100%" stop-color="#E65100" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF9933" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FF9933" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg-grad)" />
+  <circle cx="300" cy="180" r="160" fill="url(#glow)" />
+
+  <!-- Traditional Mandala Ring Motif -->
+  <circle cx="300" cy="180" r="110" fill="none" stroke="#FFB74D" stroke-width="2" stroke-dasharray="6,6" opacity="0.4" />
+  <circle cx="300" cy="180" r="95" fill="none" stroke="#FFD54F" stroke-width="1.5" opacity="0.6" />
+
+  <!-- Central Culinary Cloche / Thali Motif -->
+  <g filter="url(#shadow)">
+    <!-- Plate base -->
+    <ellipse cx="300" cy="225" rx="75" ry="12" fill="#FFA726" opacity="0.9" />
+    <!-- Cloche dome -->
+    <path d="M 235 220 C 235 155, 365 155, 365 220 Z" fill="#FFE082" />
+    <path d="M 245 218 C 248 165, 352 165, 355 218 Z" fill="#FFF8E1" opacity="0.7" />
+    <!-- Dome knob -->
+    <circle cx="300" cy="155" r="9" fill="#FFB300" />
+    <!-- Tadka flame / spice sparkle -->
+    <path d="M 300 130 Q 306 142, 300 148 Q 294 142, 300 130 Z" fill="#FF5722" />
+  </g>
+
+  <!-- Restaurant Brand & Placeholder Text -->
+  <text x="300" y="275" font-family="'Inter', -apple-system, sans-serif" font-weight="700" font-size="22" fill="#FFFDF7" text-anchor="middle" letter-spacing="1.5">
+    DESI TADKA
+  </text>
+  <text x="300" y="302" font-family="'Inter', -apple-system, sans-serif" font-weight="500" font-size="14" fill="#FFCC80" text-anchor="middle" letter-spacing="0.8">
+    Authentic Indian Culinary Visualizer
+  </text>
+  <text x="300" y="335" font-family="'Inter', -apple-system, sans-serif" font-weight="400" font-size="12" fill="#FFE0B2" opacity="0.75" text-anchor="middle">
+    600 × 400 WebP Photo Optimized
+  </text>
+</svg>

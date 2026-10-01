@@ -1,6 +1,10 @@
 # ==============================================================================
-# Docker Build Context Ignore Rules
+# Docker Build Context Ignore Rules: Desi Tadka
 # ==============================================================================
+
+# Raw high-resolution image assets (Commit & ship only optimized WebP in dishes/)
+app/images/raw/
+images/raw/
 
 # Git & GitHub metadata
 .git/
@@ -12,6 +16,7 @@ terraform/
 ansible/
 jenkins/
 k8s/
+scripts/
 
 # Documentation & Markdown
 *.md
@@ -48,5 +53,7 @@ id_ed25519
 Thumbs.db
 .idea/
 .vscode/
-*.swp
-*.swo
+dist/
+build/
+tmp/
+temp/

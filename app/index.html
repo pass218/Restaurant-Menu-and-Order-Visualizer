@@ -3,227 +3,320 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Restaurant Menu & Order Visualizer - Cloud Native Web Application on AWS ap-south-1 with Kubernetes, Docker, and CI/CD">
-  <title>SavoryBite | Restaurant Menu & Order Visualizer</title>
+  <meta name="description" content="Desi Tadka | Authentic Indian Restaurant Menu & Order Visualizer - Cloud-Native Architecture on AWS Mumbai ap-south-1 with Kubernetes, Docker, and CI/CD">
+  <title>Desi Tadka | Authentic Indian Dining & Order Visualizer</title>
+  
+  <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Top Navigation -->
-  <nav class="navbar" id="main-navbar">
+  <!-- Top Navigation Bar -->
+  <header class="navbar" id="main-navbar">
     <div class="nav-container">
-      <div class="brand-wrapper" id="brand-header">
-        <span class="brand-icon">🍽️</span>
-        <div>
-          <div class="brand-title">SavoryBite</div>
-          <div class="brand-tagline">Menu & Order Visualizer</div>
+      <div class="brand-wrapper" id="brand-header" role="banner">
+        <span class="brand-symbol">🌶️</span>
+        <div class="brand-text-group">
+          <h1 class="brand-title">DESI TADKA</h1>
+          <span class="brand-tagline">Authentic Indian Flavours • Cloud Native Visualizer</span>
         </div>
       </div>
       
-      <div class="nav-badges">
-        <div class="cloud-badge" id="cloud-status-badge" title="Production Cluster Status">
-          <span class="cloud-badge-dot"></span>
-          <span>AWS ap-south-1</span>
+      <div class="nav-actions">
+        <!-- Infrastructure Cluster Badge -->
+        <div class="cloud-badge" id="cloud-status-badge" title="Production Cluster Region">
+          <span class="pulse-dot"></span>
+          <span>AWS ap-south-1 (Mumbai)</span>
         </div>
-        <button class="cart-toggle-btn" id="cart-toggle-btn" aria-label="View Cart">
-          <span>🛒 Cart</span>
-          <span class="cart-badge-count" id="nav-cart-badge">0</span>
+
+        <!-- Cart Trigger Button -->
+        <button class="cart-trigger-btn" id="cart-toggle-btn" aria-label="Open Shopping Cart">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-label">Cart</span>
+          <span class="cart-badge" id="nav-cart-badge">0</span>
         </button>
       </div>
-    </div>
-  </nav>
-
-  <!-- Hero Header -->
-  <header class="hero-section" id="hero-banner">
-    <h1 class="hero-title">Culinary Excellence, Delivered Fast</h1>
-    <p class="hero-subtitle">Explore our chef-curated seasonal menu. Real-time cart calculation and contactless table ordering.</p>
-    
-    <div class="search-wrapper">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="menu-search-input" class="search-input" placeholder="Search dishes, ingredients, or flavors..." aria-label="Search Menu Dishes">
     </div>
   </header>
 
-  <!-- Filters: Category & Dietary Tags -->
-  <section class="filters-container" id="filters-section" aria-label="Menu Filters">
-    <!-- Category Tabs -->
-    <div class="category-nav" id="category-filter-group" role="tablist">
-      <button class="category-btn active" data-category="All" id="cat-btn-all" role="tab" aria-selected="true">
-        <span>✨ All Categories</span>
-      </button>
-      <button class="category-btn" data-category="Starters" id="cat-btn-starters" role="tab" aria-selected="false">
-        <span>🥟 Starters</span>
-      </button>
-      <button class="category-btn" data-category="Mains" id="cat-btn-mains" role="tab" aria-selected="false">
-        <span>🍛 Mains</span>
-      </button>
-      <button class="category-btn" data-category="Desserts" id="cat-btn-desserts" role="tab" aria-selected="false">
-        <span>🍰 Desserts</span>
-      </button>
-      <button class="category-btn" data-category="Drinks" id="cat-btn-drinks" role="tab" aria-selected="false">
-        <span>🍹 Drinks</span>
-      </button>
-    </div>
-
-    <!-- Dietary Filter Buttons -->
-    <div class="dietary-nav" id="dietary-filter-group">
-      <span class="dietary-title">Dietary:</span>
-      <button class="dietary-btn active" data-dietary="All" id="diet-btn-all">All</button>
-      <button class="dietary-btn" data-dietary="Vegan" id="diet-btn-vegan">🌱 Vegan</button>
-      <button class="dietary-btn" data-dietary="Vegetarian" id="diet-btn-vegetarian">🧀 Vegetarian</button>
-      <button class="dietary-btn" data-dietary="Gluten-Free" id="diet-btn-glutenfree">🌾 Gluten-Free</button>
-      <button class="dietary-btn" data-dietary="Non-Veg" id="diet-btn-nonveg">🥩 Non-Veg</button>
+  <!-- Hero Banner -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="hero-subheading">WELCOME TO ROYAL INDIAN HOSPITALITY</span>
+      <h2 class="hero-heading">A Symphony of Spices & Royal Traditions</h2>
+      <p class="hero-description">
+        Experience heritage culinary recipes curated across the royal kitchens of India — from the clay tandoors of Punjab to the aromatic spice hills of Chettinad.
+      </p>
+      
+      <!-- Live Quick Stats -->
+      <div class="hero-stats">
+        <div class="stat-pill"><span class="stat-val">27</span> Curated Dishes</div>
+        <div class="stat-pill"><span class="stat-val">5%</span> Standard Food GST</div>
+        <div class="stat-pill"><span class="stat-val">100%</span> Authentic Spices</div>
+      </div>
     </div>
   </section>
 
-  <!-- Main Content: Menu Grid & Live Cart Sidebar -->
-  <main class="main-content" id="main-app-content">
-    <!-- Food Dishes Grid -->
-    <section class="menu-grid" id="menu-items-grid" aria-live="polite">
-      <!-- Cards dynamically injected by app.js -->
+  <!-- Main Content Layout -->
+  <main class="main-layout container">
+    <!-- Filter Control Center -->
+    <section class="controls-panel" aria-label="Menu Filters">
+      <!-- Category Tabs -->
+      <div class="category-tabs" id="category-tabs" role="tablist">
+        <button class="tab-btn active" data-category="All" role="tab" aria-selected="true">All Dishes</button>
+        <button class="tab-btn" data-category="Starters" role="tab" aria-selected="false">Starters</button>
+        <button class="tab-btn" data-category="Mains" role="tab" aria-selected="false">Mains</button>
+        <button class="tab-btn" data-category="Breads & Rice" role="tab" aria-selected="false">Breads & Rice</button>
+        <button class="tab-btn" data-category="Desserts" role="tab" aria-selected="false">Desserts</button>
+        <button class="tab-btn" data-category="Drinks" role="tab" aria-selected="false">Drinks</button>
+      </div>
+
+      <!-- Dietary Filter Buttons -->
+      <div class="dietary-filters-wrapper">
+        <span class="filter-label">Dietary Preference:</span>
+        <div class="dietary-buttons" id="dietary-buttons">
+          <button class="diet-btn active" data-dietary="All">All</button>
+          
+          <button class="diet-btn" data-dietary="Veg">
+            <span class="fssai-indicator fssai-veg" title="Vegetarian"><span class="fssai-dot"></span></span>
+            Veg
+          </button>
+          
+          <button class="diet-btn" data-dietary="Non-Veg">
+            <span class="fssai-indicator fssai-nonveg" title="Non-Vegetarian"><span class="fssai-dot"></span></span>
+            Non-Veg
+          </button>
+          
+          <button class="diet-btn" data-dietary="Vegan">Vegan</button>
+          <button class="diet-btn" data-dietary="Jain">Jain</button>
+          <button class="diet-btn" data-dietary="Gluten-Free">Gluten-Free</button>
+        </div>
+      </div>
     </section>
 
-    <!-- Sidebar: Real-time Live Cart -->
-    <aside class="cart-panel" id="cart-panel-sidebar">
-      <div class="cart-header">
-        <div class="cart-heading">
-          <span>🛒 Your Order</span>
-          <span class="cart-badge-count" id="sidebar-cart-badge">0</span>
-        </div>
-        <button class="cart-clear-btn" id="cart-clear-all-btn" title="Clear all items from cart">Clear</button>
+    <!-- Menu Grid -->
+    <section class="menu-display-area">
+      <div class="section-header">
+        <h3 class="section-title" id="menu-current-title">Explore Our Menu</h3>
+        <span class="dish-count-badge" id="dish-counter">Showing 27 items</span>
       </div>
 
-      <div class="cart-items-list" id="cart-items-list">
-        <!-- Cart item list injected dynamically -->
+      <div class="menu-grid" id="dishes-grid">
+        <!-- Rendered reactively via app.js -->
       </div>
 
-      <div class="cart-summary" id="cart-summary-section">
-        <div class="summary-row">
-          <span>Subtotal</span>
-          <span id="cart-subtotal-val">$0.00</span>
-        </div>
-        <div class="summary-row">
-          <span>Taxes & Service (8%)</span>
-          <span id="cart-tax-val">$0.00</span>
-        </div>
-        <div class="summary-row total-row">
-          <span>Grand Total</span>
-          <span class="total-amount" id="cart-grand-total-val">$0.00</span>
-        </div>
-
-        <button class="checkout-btn" id="proceed-to-checkout-btn" disabled>
-          <span>Proceed to Checkout</span>
-          <span>→</span>
-        </button>
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="empty-state">
+        <span class="empty-icon">🍲</span>
+        <h4>No Dishes Found</h4>
+        <p>No dishes match the selected category and dietary filters. Please adjust your selection.</p>
+        <button class="reset-filters-btn" id="reset-filters-btn">Reset All Filters</button>
       </div>
-    </aside>
+    </section>
   </main>
 
-  <!-- Checkout Modal -->
-  <div class="modal-overlay" id="checkout-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 class="modal-title" id="checkout-modal-title">Complete Your Order</h2>
-        <button class="modal-close-btn" id="checkout-close-btn" aria-label="Close Checkout Modal">&times;</button>
+  <!-- Slide-out Shopping Cart Drawer -->
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <div class="cart-header-title">
+        <span class="cart-title-icon">🛒</span>
+        <h3>Your Order Summary</h3>
       </div>
+      <button class="close-drawer-btn" id="cart-close-btn" aria-label="Close Cart">&times;</button>
+    </div>
+
+    <!-- Cart Item List -->
+    <div class="cart-items-container" id="cart-items-container">
+      <!-- Items dynamically populated -->
+    </div>
+
+    <!-- Bill Summary Card -->
+    <div class="bill-summary-card" id="bill-summary-card">
+      <div class="bill-row">
+        <span>Subtotal</span>
+        <span class="bill-amount" id="bill-subtotal">₹0</span>
+      </div>
+      <div class="bill-row">
+        <span>GST (5% Food Services)</span>
+        <span class="bill-amount" id="bill-gst">₹0</span>
+      </div>
+      <div class="bill-divider"></div>
+      <div class="bill-row grand-total-row">
+        <span>Grand Total</span>
+        <span class="bill-amount highlight" id="bill-grand-total">₹0</span>
+      </div>
+
+      <button class="checkout-proceed-btn" id="checkout-open-btn" disabled>
+        Proceed to Table Checkout
+      </button>
+    </div>
+  </aside>
+  <div class="cart-backdrop" id="cart-backdrop"></div>
+
+  <!-- Dish Detail Modal (Large Image View) -->
+  <div class="modal-overlay hidden" id="detail-modal" role="dialog" aria-modal="true">
+    <div class="modal-card detail-modal-card">
+      <button class="modal-close-btn" id="detail-modal-close" aria-label="Close Details">&times;</button>
       
-      <form id="checkout-form">
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label" for="customer-name-input">Guest Full Name *</label>
-            <input type="text" id="customer-name-input" class="form-input" placeholder="e.g. Alex Morgan" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="table-number-input">Table Number / Dining Mode *</label>
-            <input type="text" id="table-number-input" class="form-input" placeholder="e.g. Table 4 or Takeaway" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="special-notes-input">Special Instructions (Optional)</label>
-            <input type="text" id="special-notes-input" class="form-input" placeholder="e.g. Extra spicy, dressing on side">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Order Summary</label>
-            <div class="order-review-box" id="checkout-items-summary">
-              <!-- Rendered summary rows -->
+      <div class="detail-modal-body">
+        <div class="detail-modal-image-wrapper">
+          <img id="detail-modal-img" src="images/placeholder.svg" alt="Dish photo" class="detail-modal-img">
+          <span class="detail-modal-emoji" id="detail-modal-emoji">🍲</span>
+        </div>
+        
+        <div class="detail-modal-info">
+          <div class="detail-modal-header">
+            <div class="detail-title-wrapper">
+              <span class="fssai-indicator" id="detail-fssai-indicator"><span class="fssai-dot"></span></span>
+              <h3 id="detail-modal-name">Dish Name</h3>
             </div>
+            <span class="detail-modal-price" id="detail-modal-price">₹0</span>
           </div>
 
-          <div class="summary-row total-row">
-            <span>Amount Due</span>
-            <span class="total-amount" id="checkout-final-amount">$0.00</span>
+          <div class="detail-tags-row" id="detail-tags-row"></div>
+
+          <p class="detail-modal-description" id="detail-modal-desc">Dish description</p>
+
+          <div class="detail-action-bar">
+            <div class="detail-spice-indicator" id="detail-spice-box">
+              <span class="spice-label">Spice Level:</span>
+              <span class="spice-value" id="detail-spice-level">Medium</span>
+            </div>
+            <button class="add-to-cart-btn primary" id="detail-add-cart-btn">Add to Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout & Billing Modal -->
+  <div class="modal-overlay hidden" id="checkout-modal" role="dialog" aria-modal="true">
+    <div class="modal-card checkout-modal-card">
+      <button class="modal-close-btn" id="checkout-modal-close" aria-label="Close Checkout">&times;</button>
+      
+      <div class="checkout-modal-header">
+        <span class="checkout-badge-icon">🧾</span>
+        <div>
+          <h3>Desi Tadka Dining Checkout</h3>
+          <p>Please enter your table details to send the order to the kitchen</p>
+        </div>
+      </div>
+
+      <form id="checkout-form" class="checkout-form" onsubmit="return false;">
+        <!-- Customer & Table Input -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="customer-name">Diner Name *</label>
+            <input type="text" id="customer-name" name="customerName" required placeholder="e.g. Rajesh Kumar" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="table-number">Table Number (1–25) *</label>
+            <input type="number" id="table-number" name="tableNumber" required min="1" max="25" placeholder="e.g. 7">
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn-secondary" id="checkout-cancel-btn">Back to Menu</button>
-          <button type="submit" class="btn-primary" id="confirm-order-submit-btn">Place Order</button>
+        <!-- Payment Mode Selection (Display only) -->
+        <div class="form-group payment-group">
+          <label class="payment-title">Preferred Payment Mode (Pay at Counter / Table)</label>
+          <div class="payment-options">
+            <label class="payment-choice active">
+              <input type="radio" name="paymentMode" value="UPI" checked>
+              <span class="pay-icon">📱</span>
+              <span class="pay-text">UPI / QR (Instant)</span>
+            </label>
+            <label class="payment-choice">
+              <input type="radio" name="paymentMode" value="Card">
+              <span class="pay-icon">💳</span>
+              <span class="pay-text">Credit / Debit Card</span>
+            </label>
+            <label class="payment-choice">
+              <input type="radio" name="paymentMode" value="Cash">
+              <span class="pay-icon">💵</span>
+              <span class="pay-text">Cash on Table</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Bill Breakdown in Modal -->
+        <div class="modal-bill-summary">
+          <div class="modal-bill-row">
+            <span>Item Subtotal:</span>
+            <span id="modal-bill-subtotal">₹0</span>
+          </div>
+          <div class="modal-bill-row">
+            <span>GST (5% SGST 2.5% + CGST 2.5%):</span>
+            <span id="modal-bill-gst">₹0</span>
+          </div>
+          <div class="modal-bill-divider"></div>
+          <div class="modal-bill-row total-highlight">
+            <span>Grand Total:</span>
+            <span id="modal-bill-total">₹0</span>
+          </div>
+        </div>
+
+        <!-- Form Submit -->
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="checkout-cancel-btn">Back to Cart</button>
+          <button type="submit" class="btn-primary" id="checkout-confirm-btn">Confirm Order</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Order Confirmation Modal -->
-  <div class="modal-overlay" id="confirmation-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 class="modal-title" id="confirmation-modal-title">Order Received! 🎉</h2>
-        <button class="modal-close-btn" id="confirmation-close-btn" aria-label="Close Confirmation Modal">&times;</button>
+  <!-- Order Confirmation Success Modal -->
+  <div class="modal-overlay hidden" id="confirmation-modal" role="dialog" aria-modal="true">
+    <div class="modal-card confirmation-card">
+      <div class="success-icon-wrap">
+        <span class="checkmark-icon">✓</span>
       </div>
 
-      <div class="modal-body confirmation-body">
-        <div class="success-check-icon">✓</div>
-        <h3>Thank you for your order!</h3>
-        <p class="hero-subtitle">Our kitchen has received your ticket and is preparing your meal.</p>
-        
-        <div>
-          <span style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase;">Ticket Reference ID</span>
-          <div class="order-id-badge" id="confirmed-order-id">ORD-XXXXXX</div>
-        </div>
+      <h3 class="success-title">Order Placed Successfully!</h3>
+      <p class="success-subtitle">The royal chefs at Desi Tadka have received your order.</p>
 
-        <div class="conf-details-box">
-          <div class="conf-row">
-            <span>Guest Name:</span>
-            <strong id="conf-guest-name">-</strong>
-          </div>
-          <div class="conf-row">
-            <span>Table / Mode:</span>
-            <strong id="conf-table-number">-</strong>
-          </div>
-          <div class="conf-row">
-            <span>Total Paid:</span>
-            <strong id="conf-total-amount" style="color: var(--accent-gold);">-</strong>
-          </div>
-          <div class="conf-row">
-            <span>Estimated Wait:</span>
-            <strong>15 - 20 minutes</strong>
-          </div>
+      <!-- Receipt Card -->
+      <div class="receipt-card">
+        <div class="receipt-header">
+          <span class="receipt-brand">DESI TADKA RESTAURANT</span>
+          <span class="receipt-address">Unit 14, Royal Heritage Arcade, Bandra West, Mumbai</span>
+        </div>
+        <div class="receipt-details">
+          <div class="receipt-item"><span>Order ID:</span> <strong id="receipt-order-id">DT-XXXXXXXX</strong></div>
+          <div class="receipt-item"><span>Customer:</span> <strong id="receipt-customer-name">--</strong></div>
+          <div class="receipt-item"><span>Table:</span> <strong id="receipt-table-num">--</strong></div>
+          <div class="receipt-item"><span>Payment Mode:</span> <strong id="receipt-payment-mode">UPI</strong></div>
+          <div class="receipt-item"><span>Timestamp:</span> <span id="receipt-timestamp">--</span></div>
+        </div>
+        <div class="receipt-divider"></div>
+        <div class="receipt-total-row">
+          <span>Amount Payable (Inc. 5% GST):</span>
+          <strong id="receipt-grand-total">₹0</strong>
         </div>
       </div>
 
-      <div class="modal-footer" style="justify-content: center;">
-        <button type="button" class="btn-primary" id="confirmation-done-btn">Start New Order</button>
+      <div class="confirmation-actions">
+        <button class="btn-primary full-width" id="confirmation-close-btn">Place Another Order</button>
       </div>
     </div>
-  </div>
-
-  <!-- Micro Toast Notification -->
-  <div class="toast" id="action-toast" role="status" aria-live="polite">
-    <span id="toast-message">Item added to cart!</span>
   </div>
 
   <!-- Footer -->
-  <footer class="footer" id="app-footer">
-    <div class="footer-links">
-      <a href="health.html" class="footer-link" id="footer-health-link" target="_blank">Health Probe (/health)</a>
-      <a href="menu.json" class="footer-link" id="footer-menu-json-link" target="_blank">Menu API (/menu.json)</a>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>DESI TADKA</h4>
+        <p>Authentic Royal Indian Dining & Cloud-Native Order Visualizer</p>
+        <p class="devops-tag">Production AWS Mumbai (ap-south-1) • Kubernetes EKS • Docker Hub • Jenkins CI/CD</p>
+      </div>
+      <div class="footer-links">
+        <a href="health.html" target="_blank" class="probe-link">Infrastructure Health Probe (/health.html)</a>
+        <span>•</span>
+        <span>Curated with Pure Desi Ghee & Aromatic Spices</span>
+      </div>
     </div>
-    <p>Restaurant Menu & Order Visualizer &bull; Production DevOps Architecture Demonstration</p>
-    <p style="margin-top: 0.25rem;">Built with Vanilla HTML5, CSS3 & JavaScript &bull; Tested with Jest</p>
   </footer>
 
   <!-- Scripts -->

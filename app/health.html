@@ -3,62 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Health Check - Restaurant Menu & Order Visualizer</title>
+  <title>Health Check | Desi Tadka Visualizer</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+      background: #12100E;
+      color: #FFFDF7;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 1.5rem;
     }
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 2rem 3rem;
+    .health-card {
+      background: #1E1A17;
+      border: 1px solid rgba(217, 119, 6, 0.4);
+      border-radius: 14px;
+      padding: 2.2rem 2.8rem;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      max-width: 480px;
+      width: 100%;
     }
-    .badge {
-      display: inline-block;
-      padding: 0.35rem 0.85rem;
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
       border-radius: 9999px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      border: 1px solid #10b981;
-      margin-bottom: 1rem;
-    }
-    h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
-    p { margin: 0.25rem 0; color: #94a3b8; font-size: 0.9rem; }
-    pre {
-      background: #0f172a;
-      padding: 0.85rem;
-      border-radius: 6px;
-      text-align: left;
+      font-weight: 700;
       font-size: 0.85rem;
-      color: #38bdf8;
-      margin-top: 1rem;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22C55E;
+      border: 1px solid #22C55E;
+      margin-bottom: 1.2rem;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: #22C55E;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22C55E;
+    }
+    h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.6rem;
+      color: #FFFDF7;
+      letter-spacing: 0.5px;
+    }
+    .app-title {
+      color: #FF9933;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      font-size: 1.05rem;
+    }
+    p {
+      margin: 0.25rem 0;
+      color: #D6CEC5;
+      font-size: 0.88rem;
+    }
+    pre {
+      background: #12100E;
+      border: 1px solid #3D352F;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.82rem;
+      color: #FDE68A;
+      margin-top: 1.2rem;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="badge" id="health-badge">● HEALTHY</div>
-    <h1>Service Status: UP</h1>
-    <p>Application: Restaurant Menu & Order Visualizer</p>
-    <p>Target Cloud: AWS (ap-south-1) | Kubernetes Container</p>
+  <div class="health-card">
+    <div class="status-badge">
+      <span class="pulse"></span>
+      <span>SYSTEM HEALTHY • HTTP 200 OK</span>
+    </div>
+    <h1>Desi Tadka Visualizer</h1>
+    <div class="app-title">Restaurant Menu & Order Visualizer</div>
+    <p>Target Cloud: AWS Mumbai (ap-south-1) • Kubernetes EKS</p>
+    <p>Container Runtime: Alpine NGINX (Non-Root UID 1001)</p>
     <pre id="json-status">{
   "status": "UP",
-  "service": "restaurant-menu-order-visualizer",
-  "timestamp": "2026-09-30T23:18:00Z",
-  "version": "1.0.0",
-  "http_code": 200
+  "service": "desi-tadka-menu-visualizer",
+  "cloud_region": "ap-south-1",
+  "probes": {
+    "liveness": "PASS",
+    "readiness": "PASS"
+  },
+  "http_status": 200
 }</pre>
   </div>
 </body>

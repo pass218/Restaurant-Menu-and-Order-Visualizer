@@ -1,52 +1,59 @@
-## Description
-Provide a concise explanation of the changes introduced in this pull request and the architectural motivation behind them.
+## Desi Tadka: Restaurant Menu & Order Visualizer — Pull Request Template
+
+### Description
+Provide a concise overview of the changes in this pull request and the architectural/operational context.
 
 Fixes / Closes #(issue_number)
 
 ---
 
-## Type of Change
-- [ ] 🚀 **Feature**: New application feature or capability
-- [ ] 🐛 **Bug Fix**: Non-breaking fix for an identified issue
+### Type of Change
+- [ ] 🚀 **Feature**: New application feature, dietary filter, or UI component
+- [ ] 🐛 **Bug Fix**: Non-breaking fix for cart, calculations, or rendering
+- [ ] 🍛 **Menu & Assets**: New Indian dishes, WebP images, or recipe updates
 - [ ] 🔧 **DevOps / CI/CD**: Jenkins pipeline, Dockerfile, or automation updates
-- [ ] 🏗️ **Infrastructure as Code**: Terraform module or Ansible role modifications
-- [ ] ☸️ **Kubernetes**: Helm chart or K8s manifests update (Deployments, Ingress, HPA)
-- [ ] 🔒 **Security**: Vulnerability patching or IAM policy tightening
-- [ ] 📝 **Documentation**: Updates to README, deployment guides, or architecture diagrams
+- [ ] 🏗️ **Infrastructure as Code**: Terraform module (VPC, EKS, EC2) or Ansible roles
+- [ ] ☸️ **Kubernetes**: Manifests, Ingress (ALB), HPA, PDB, RollingUpdate strategy
+- [ ] 🔒 **Security**: Vulnerability remediation or IAM policy hardening
+- [ ] 📝 **Documentation**: Architecture guides, diagrams, or runbooks
 
 ---
 
-## Component(s) Impacted
-- [ ] `app/` (Frontend, dietary filters, cart logic, Jest tests)
-- [ ] `docker/` (Dockerfile, nginx.conf, container hardening)
-- [ ] `jenkins/` (Jenkinsfile, pipeline stages, Trivy scanner)
-- [ ] `terraform/` (AWS VPC, EKS/EC2, IAM, Security Groups)
-- [ ] `ansible/` (Playbooks, roles, inventory, provisioning)
-- [ ] `k8s/` (Manifests, HPA, PDB, RollingUpdate strategy)
+### Component(s) Impacted
+- [ ] `app/` (index.html, styles.css, app.js, logic.js, menu.json)
+- [ ] `app/images/` (WebP dish images in `app/images/dishes/`)
+- [ ] `docker/` (Dockerfile, nginx.conf, container security)
+- [ ] `jenkins/` (Jenkinsfile, Trivy scan, Docker Hub push, K8s deploy)
+- [ ] `terraform/` (AWS VPC, EKS cluster, EC2 Jenkins/Ansible, IAM)
+- [ ] `ansible/` (Playbooks, roles, inventory, node configuration)
+- [ ] `k8s/` (Deployment, ClusterIP Service, Ingress, HPA, PDB)
+- [ ] `scripts/` (Image optimization and helper scripts)
 
 ---
 
-## DevOps & Quality Assurance Checklist
-- [ ] **Unit Tests Passed**: `npm test` runs cleanly with 100% pass rate.
-- [ ] **Test Coverage**: Coverage threshold maintained (>= 80%).
-- [ ] **Lint & Format**: Code adheres to project formatting guidelines.
-- [ ] **Container Hardening**: Dockerfile utilizes non-root user and multi-stage build.
-- [ ] **Vulnerability Scanning**: Trivy container scan reports 0 CRITICAL vulnerabilities.
-- [ ] **No Secrets Committed**: Verified no private keys, `.env`, or `.tfvars` are checked in.
-- [ ] **Idempotence Verified**: Terraform `plan` and Ansible playbook runs are idempotent.
-- [ ] **Zero-Downtime Ready**: Kubernetes RollingUpdate strategy validated for zero dropped requests.
+### DevOps & Quality Gate Checklist
+- [ ] **Unit Tests Passed**: `npm test` runs with 100% pass rate (32/32 tests).
+- [ ] **Currency Standard**: All prices strictly formatted in Indian Rupees (₹), whole numbers. No dollar signs (`$`) present.
+- [ ] **Image Asset Verification**:
+  - [ ] All new dish photos converted to Google WebP format (`.webp`).
+  - [ ] Fixed 600×400 resolution (3:2 aspect ratio).
+  - [ ] File size strictly under 80 KB.
+  - [ ] Descriptive, non-empty `alt` text provided in `menu.json`.
+  - [ ] `app/images/raw/` is NOT committed (verified via `.gitignore`).
+- [ ] **Container Hardening**:
+  - [ ] Multi-stage Docker build passes.
+  - [ ] NGINX runtime runs as unprivileged user (non-root UID 1001).
+  - [ ] Trivy vulnerability scan reports 0 CRITICAL vulnerabilities.
+- [ ] **Secrets & Security**: Verified no AWS credentials, private keys, `.env`, or `.tfvars` are staged.
+- [ ] **Zero-Downtime Deployment**: Kubernetes rolling update strategy preserves service availability.
 
 ---
 
-## Verification & Screenshots
-Please attach relevant screenshots, test execution outputs, or terminal outputs demonstrating successful deployment and testing:
-
+### Verification Proof & Screenshots
 ```bash
-# Example test command verification:
-npm test -- --coverage
+# Verify Jest unit test suite:
+cd app && npm test
+
+# Verify all dish images are under 80 KB:
+ls -lh app/images/dishes/
 ```
-
----
-
-## Reviewer Notes & Deployment Instructions
-*(Optional) Note any environment variable changes, manual database migrations, or AWS parameter updates required upon merging.*

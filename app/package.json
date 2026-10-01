@@ -1,7 +1,7 @@
 {
-  "name": "restaurant-menu-order-visualizer",
+  "name": "desi-tadka-menu-visualizer",
   "version": "1.0.0",
-  "description": "Production-grade Restaurant Menu & Order Visualizer Web Application",
+  "description": "Desi Tadka: Production Indian Restaurant Menu & Order Visualizer Web Application",
   "main": "logic.js",
   "scripts": {
     "test": "jest --runInBand --verbose",
@@ -10,6 +10,8 @@
     "start": "npx serve ."
   },
   "keywords": [
+    "desi-tadka",
+    "indian-food",
     "devops",
     "kubernetes",
     "docker",

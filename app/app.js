@@ -1,611 +1,850 @@
 /**
- * Main Application Script for Restaurant Menu & Order Visualizer
+ * Desi Tadka — Interactive Frontend Application Controller
+ * Manages reactive menu rendering, dietary filters, cart state,
+ * modal workflows, and Indian Rupee financial computations.
  */
 
-// Fallback menu in case opened directly via file:// protocol where fetch is blocked by CORS
-const FALLBACK_MENU = [
+// Fallback catalog in case index.html is opened via local file:// protocol
+const DESI_TADKA_FALLBACK = [
   {
     "id": 1,
-    "name": "Truffle Mushroom Arancini",
+    "name": "Paneer Tikka",
+    "price": 260,
     "category": "Starters",
-    "price": 9.50,
-    "emoji": "🧆",
-    "description": "Crispy golden risotto balls infused with black winter truffle and melted mozzarella core.",
-    "dietary": ["Vegetarian"]
+    "emoji": "🧀",
+    "image": "images/dishes/paneer-tikka.webp",
+    "alt": "Skewered cottage cheese cubes charred in a clay tandoor with capsicum and onions",
+    "dietary": ["Veg", "Jain", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Succulent cubes of artisanal cottage cheese marinated in spiced hung curd, ajwain, and Kashmiri chili, roasted in a clay tandoor."
   },
   {
     "id": 2,
-    "name": "Avocado & Tomato Bruschetta",
+    "name": "Veg Samosa",
+    "price": 120,
     "category": "Starters",
-    "price": 8.00,
-    "emoji": "🥖",
-    "description": "Charred sourdough topped with ripe heirloom tomatoes, smashed avocado, basil, and aged balsamic glaze.",
-    "dietary": ["Vegan", "Vegetarian"]
+    "emoji": "🥟",
+    "image": "images/dishes/veg-samosa.webp",
+    "alt": "Two golden crispy pastry cones filled with spiced potatoes and peas",
+    "dietary": ["Veg", "Vegan"],
+    "spice": "Medium",
+    "description": "Crisp flaky pastry triangles filled with tempered cumin potatoes, green peas, and whole spices, served with tamarind and mint chutneys."
   },
   {
     "id": 3,
-    "name": "Gluten-Free Garlic Prawns",
+    "name": "Chicken 65",
+    "price": 290,
     "category": "Starters",
-    "price": 12.50,
-    "emoji": "🍤",
-    "description": "Pan-seared jumbo tiger prawns tossed in garlic-infused olive oil, white wine, chili flakes, and fresh parsley.",
-    "dietary": ["Gluten-Free", "Non-Veg"]
+    "emoji": "🍗",
+    "image": "images/dishes/chicken-65.webp",
+    "alt": "Fiery red deep-fried chicken bites garnished with fried curry leaves and split green chilies",
+    "dietary": ["Non-Veg"],
+    "spice": "Hot",
+    "description": "Iconic Chennai-style crispy boneless chicken chunks infused with fiery red chilies, crushed black pepper, fresh curry leaves, and garlic."
   },
   {
     "id": 4,
-    "name": "Crispy Tandoori Paneer Bites",
+    "name": "Hara Bhara Kebab",
+    "price": 220,
     "category": "Starters",
-    "price": 9.00,
-    "emoji": "🧀",
-    "description": "Spiced cottage cheese cubes charred in tandoor spices, served with mint-coriander chutney.",
-    "dietary": ["Vegetarian", "Gluten-Free"]
+    "emoji": "🥬",
+    "image": "images/dishes/hara-bhara-kebab.webp",
+    "alt": "Pan-seared spinach and green pea patties crowned with half a cashew nut",
+    "dietary": ["Veg", "Vegan", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Pan-seared nutritious patties made from farm-fresh spinach, green peas, and potatoes seasoned with roasted cumin and chaat masala."
   },
   {
     "id": 5,
-    "name": "Smoked Chicken Yakitori",
+    "name": "Fish Amritsari",
+    "price": 340,
     "category": "Starters",
-    "price": 10.50,
-    "emoji": "🍢",
-    "description": "Skewered tender chicken thigh glazed with sweet tare sauce, sesame seeds, and scallions.",
-    "dietary": ["Non-Veg"]
+    "emoji": "🐟",
+    "image": "images/dishes/fish-amritsari.webp",
+    "alt": "Golden batter-fried river sole fish fillets dusted with chaat masala",
+    "dietary": ["Non-Veg", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Fresh river sole fish goujons steeped in ginger-garlic paste and carom seeds (ajwain), coated in crisp gram-flour batter."
   },
   {
     "id": 6,
-    "name": "Artisanal Margherita Pizza",
+    "name": "Butter Chicken",
+    "price": 380,
     "category": "Mains",
-    "price": 14.50,
-    "emoji": "🍕",
-    "description": "Slow-fermented Neapolitan crust, San Marzano tomato sauce, fresh buffalo mozzarella, and sweet basil leaves.",
-    "dietary": ["Vegetarian"]
+    "emoji": "🍲",
+    "image": "images/dishes/butter-chicken.webp",
+    "alt": "Rich orange creamy tomato gravy with charred tandoori chicken pieces and butter swirl",
+    "dietary": ["Non-Veg"],
+    "spice": "Mild",
+    "description": "Char-grilled tandoori chicken simmered slowly in a decadent, silky gravy of San Marzano style tomatoes, butter, cashew paste, and kasoori methi."
   },
   {
     "id": 7,
-    "name": "Green Garden Thai Curry",
+    "name": "Palak Paneer",
+    "price": 310,
     "category": "Mains",
-    "price": 15.00,
-    "emoji": "🍲",
-    "description": "Fragrant coconut green curry packed with bamboo shoots, baby corn, snap peas, and tofu, served with jasmine rice.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "emoji": "🧀",
+    "image": "images/dishes/palak-paneer.webp",
+    "alt": "Vibrant emerald green spinach gravy with soft cottage cheese cubes",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Farm-fresh spinach blanched and puréed with garlic, cumin, and green chilies, finished with soft cottage cheese cubes and fresh cream."
   },
   {
     "id": 8,
-    "name": "Grilled Atlantic Salmon",
+    "name": "Dal Makhani",
+    "price": 280,
     "category": "Mains",
-    "price": 22.00,
-    "emoji": "🐟",
-    "description": "Herb-crusted wild Atlantic salmon fillet served over roasted asparagus and lemon-dill velouté.",
-    "dietary": ["Gluten-Free", "Non-Veg"]
+    "emoji": "🥣",
+    "image": "images/dishes/dal-makhani.webp",
+    "alt": "Slow-cooked black lentils in creamy tomato gravy with a dollop of white butter",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Whole black lentils and kidney beans slow-simmered over live charcoal for 16 hours with butter, fresh tomato purée, and delicate aromatics."
   },
   {
     "id": 9,
-    "name": "Prime Angus Truffle Burger",
+    "name": "Chole Masala",
+    "price": 250,
     "category": "Mains",
-    "price": 18.50,
-    "emoji": "🍔",
-    "description": "Handmade Angus beef patty, aged cheddar, caramelized shallots, arugula, and truffle mayo on brioche.",
-    "dietary": ["Non-Veg"]
+    "emoji": "🍛",
+    "image": "images/dishes/chole-masala.webp",
+    "alt": "Dark spiced chickpea curry garnished with ginger juliennes and fresh coriander",
+    "dietary": ["Veg", "Vegan", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Kabuli chickpeas cooked tender in an authentic Amritsari blend of roasted pomegranate seeds, black cardamom, and dried mango powder."
   },
   {
     "id": 10,
-    "name": "Wild Mushroom Quinoa Bowl",
+    "name": "Hyderabadi Chicken Biryani",
+    "price": 390,
     "category": "Mains",
-    "price": 14.00,
-    "emoji": "🥗",
-    "description": "Warm organic tricolor quinoa, roasted portobello mushrooms, kale chips, avocado, and tahini-lemon dressing.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "emoji": "🍚",
+    "image": "images/dishes/hyderabadi-chicken-biryani.webp",
+    "alt": "Fragrant layered basmati rice with marinated chicken pieces, caramelized onions, and saffron",
+    "dietary": ["Non-Veg"],
+    "spice": "Spicy",
+    "description": "Kacchi dum biryani layered with marinated chicken, long-grain aged basmati rice, brown onions, fresh mint, and saffron milk."
   },
   {
     "id": 11,
-    "name": "Molten Belgian Chocolate Cake",
-    "category": "Desserts",
-    "price": 8.50,
-    "emoji": "🍫",
-    "description": "Warm dark chocolate fondant with a luscious gooey center, dusted with Dutch cocoa.",
-    "dietary": ["Vegetarian"]
+    "name": "Veg Dum Biryani",
+    "price": 320,
+    "category": "Mains",
+    "emoji": "🥘",
+    "image": "images/dishes/veg-biryani.webp",
+    "alt": "Basmati rice cooked in a sealed pot with assorted vegetables, paneer, and whole spices",
+    "dietary": ["Veg", "Jain", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Flavourful aged basmati rice slow-cooked in a sealed clay pot (handi) with garden vegetables, cottage cheese, saffron, and kewra essence."
   },
   {
     "id": 12,
-    "name": "Vegan Wild Berry Panna Cotta",
-    "category": "Desserts",
-    "price": 7.50,
-    "emoji": "🍓",
-    "description": "Silk coconut cream panna cotta topped with wild blackberry coulis and fresh mint.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Mutton Rogan Josh",
+    "price": 460,
+    "category": "Mains",
+    "emoji": "🥩",
+    "image": "images/dishes/mutton-rogan-josh.webp",
+    "alt": "Deep red Kashmiri mutton curry with bone-in tender meat in fragrant thin gravy",
+    "dietary": ["Non-Veg", "Gluten-Free"],
+    "spice": "Spicy",
+    "description": "Traditional Kashmiri delicacy of tender spring lamb simmered with Kashmiri dry red chilies, fennel powder, dried ginger, and ratan jot."
   },
   {
     "id": 13,
-    "name": "Classic Venetian Tiramisu",
-    "category": "Desserts",
-    "price": 8.00,
-    "emoji": "🍰",
-    "description": "Espresso-soaked ladyfingers layered with rich mascarpone zabaglione and bittersweet cocoa.",
-    "dietary": ["Vegetarian"]
+    "name": "Chettinad Chicken",
+    "price": 370,
+    "category": "Mains",
+    "emoji": "🌶️",
+    "image": "images/dishes/chettinad-chicken.webp",
+    "alt": "Dark rustic South Indian chicken curry loaded with freshly roasted peppercorns and curry leaves",
+    "dietary": ["Non-Veg", "Gluten-Free"],
+    "spice": "Hot",
+    "description": "A spicy and aromatic curry from Tamil Nadu prepared with freshly roasted kalpasi (stone flower), black peppercorns, grated coconut, and shallots."
   },
   {
     "id": 14,
-    "name": "Gluten-Free Almond Lemon Tart",
-    "category": "Desserts",
-    "price": 7.00,
-    "emoji": "🍋",
-    "description": "Zesty Sicilian lemon curd set in a delicate toasted almond meal crust.",
-    "dietary": ["Vegetarian", "Gluten-Free"]
+    "name": "Butter Naan",
+    "price": 60,
+    "category": "Breads & Rice",
+    "emoji": "🫓",
+    "image": "images/dishes/butter-naan.webp",
+    "alt": "Tear-drop shaped tandoor-baked flatbread glazed with melted yellow butter",
+    "dietary": ["Veg"],
+    "spice": "Mild",
+    "description": "Traditional leavened white flour bread slapped onto tandoor walls and baked till bubbly, basted with rich melted butter."
   },
   {
     "id": 15,
-    "name": "Artisan Alphonso Mango Gelato",
-    "category": "Desserts",
-    "price": 6.50,
-    "emoji": "🍨",
-    "description": "Double-churned Alphonso mango sorbet crafted with organic cane sugar and lime zest.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Garlic Naan",
+    "price": 80,
+    "category": "Breads & Rice",
+    "emoji": "🧄",
+    "image": "images/dishes/garlic-naan.webp",
+    "alt": "Pillowy tandoor naan topped with minced roasted garlic, butter, and green coriander",
+    "dietary": ["Veg"],
+    "spice": "Mild",
+    "description": "Tandoor-baked leavened bread studded with freshly crushed garlic cloves, fresh cilantro, and finished with golden butter."
   },
   {
     "id": 16,
-    "name": "Fresh Passionfruit Mojito",
-    "category": "Drinks",
-    "price": 6.50,
-    "emoji": "🍹",
-    "description": "Sparkling mocktail with crushed mint, lime juice, organic passionfruit pulp, and cane soda.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Tandoori Roti",
+    "price": 40,
+    "category": "Breads & Rice",
+    "emoji": "🍞",
+    "image": "images/dishes/tandoori-roti.webp",
+    "alt": "Whole wheat circular flatbread with charred spots from the clay oven",
+    "dietary": ["Veg", "Vegan"],
+    "spice": "Mild",
+    "description": "Crisp and wholesome stone-ground whole wheat flatbread baked directly over red-hot charcoal in an authentic clay tandoor."
   },
   {
     "id": 17,
-    "name": "Kyoto Iced Matcha Latte",
-    "category": "Drinks",
-    "price": 5.50,
-    "emoji": "🍵",
-    "description": "Ceremonial-grade Japanese matcha whisked with velvety oat milk and vanilla bean.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Jeera Rice",
+    "price": 180,
+    "category": "Breads & Rice",
+    "emoji": "🌾",
+    "image": "images/dishes/jeera-rice.webp",
+    "alt": "Long-grain white basmati rice tossed with cracked cumin seeds and coriander",
+    "dietary": ["Veg", "Vegan", "Jain", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Aromatic steamed aged basmati rice tempered in fragrant desi ghee with roasted cumin seeds and fresh green coriander."
   },
   {
     "id": 18,
-    "name": "Cold Brew Nitro Espresso",
-    "category": "Drinks",
-    "price": 5.00,
-    "emoji": "☕",
-    "description": "18-hour cold steeped single-origin Ethiopian beans infused with nitrogen for a creamy head.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Masala Dosa",
+    "price": 190,
+    "category": "Breads & Rice",
+    "emoji": "🥞",
+    "image": "images/dishes/masala-dosa.webp",
+    "alt": "Crispy golden crepe rolled over spiced mashed potato filling served with coconut chutney and sambar",
+    "dietary": ["Veg", "Vegan", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Crispy fermented rice and urad dal crepe filled with turmeric-tempered potato masala, served with piping hot sambar and fresh coconut chutney."
   },
   {
     "id": 19,
-    "name": "Sicilian Blood Orange Spritz",
-    "category": "Drinks",
-    "price": 6.00,
-    "emoji": "🍊",
-    "description": "Sun-ripened blood orange extract, sparkling mineral water, rosemary sprig, and crushed ice.",
-    "dietary": ["Vegan", "Vegetarian", "Gluten-Free"]
+    "name": "Gulab Jamun",
+    "price": 140,
+    "category": "Desserts",
+    "emoji": "🍯",
+    "image": "images/dishes/gulab-jamun.webp",
+    "alt": "Warm golden-brown milk dumplings immersed in fragrant sugar syrup with pistachio garnish",
+    "dietary": ["Veg"],
+    "spice": "Mild",
+    "description": "Golden fried dumplings made from fresh reduced milk solids (khoya), steeped in warm saffron, cardamom, and rose water syrup."
   },
   {
     "id": 20,
-    "name": "Spiced Karak Masala Chai",
+    "name": "Rasmalai",
+    "price": 160,
+    "category": "Desserts",
+    "emoji": "🥛",
+    "image": "images/dishes/rasmalai.webp",
+    "alt": "Spongy white cottage cheese patties floating in chilled saffron-pistachio thickened milk",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Soft and spongy poached chenna patties soaked in thick, chilled malai sweetened with cane sugar and infused with saffron and slivered pistachios."
+  },
+  {
+    "id": 21,
+    "name": "Gajar Halwa",
+    "price": 170,
+    "category": "Desserts",
+    "emoji": "🥕",
+    "image": "images/dishes/gajar-halwa.webp",
+    "alt": "Warm vibrant orange grated carrot pudding garnished with roasted cashews and raisins",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Classic winter dessert prepared by slow-simmering tender red Delhi carrots in full-cream milk, pure desi ghee, khoya, and green cardamom."
+  },
+  {
+    "id": 22,
+    "name": "Royal Malai Kulfi",
+    "price": 130,
+    "category": "Desserts",
+    "emoji": "🍦",
+    "image": "images/dishes/kulfi.webp",
+    "alt": "Traditional dense Indian ice cream stick on a terracotta plate topped with chopped almonds and saffron threads",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Rich and dense frozen Indian dairy dessert crafted by caramelizing milk over several hours with cardamom, crushed almonds, and saffron."
+  },
+  {
+    "id": 23,
+    "name": "Masala Chai",
+    "price": 70,
     "category": "Drinks",
-    "price": 4.50,
-    "emoji": "🫖",
-    "description": "Slow-brewed Assam black tea simmered with whole cardamom, ginger, cloves, and whole milk.",
-    "dietary": ["Vegetarian", "Gluten-Free"]
+    "emoji": "☕",
+    "image": "images/dishes/masala-chai.webp",
+    "alt": "Steaming hot Indian tea served in a traditional clay kulhad",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Robust Assam black tea leaves boiled with whole buffalo milk, crushed fresh ginger, green cardamom, cinnamon, and cloves."
+  },
+  {
+    "id": 24,
+    "name": "Sweet Punjabi Lassi",
+    "price": 110,
+    "category": "Drinks",
+    "emoji": "🥤",
+    "image": "images/dishes/sweet-lassi.webp",
+    "alt": "Frothy churned sweet yoghurt in a tall glass topped with a layer of thick cream",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Traditional North Indian beverage made from thick curd churned with powdered sugar and rose water, crowned with dense malai."
+  },
+  {
+    "id": 25,
+    "name": "Mango Lassi",
+    "price": 140,
+    "category": "Drinks",
+    "emoji": "🥭",
+    "image": "images/dishes/mango-lassi.webp",
+    "alt": "Creamy golden-yellow mango yoghurt smoothie with crushed pistachio topping",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Velvety blend of fresh thick yoghurt, sweet Ratnagiri Alphonso mango pulp, a hint of cardamom, and a touch of wild honey."
+  },
+  {
+    "id": 26,
+    "name": "South Indian Filter Coffee",
+    "price": 80,
+    "category": "Drinks",
+    "emoji": "☕",
+    "image": "images/dishes/filter-coffee.webp",
+    "alt": "Foamy aromatic South Indian filter coffee in a brass dabarah and tumbler set",
+    "dietary": ["Veg", "Gluten-Free"],
+    "spice": "Mild",
+    "description": "Strong coffee decoction brewed through a traditional brass filter with chicory blend, poured back and forth with hot milk for a frothy crown."
+  },
+  {
+    "id": 27,
+    "name": "Chilled Jaljeera",
+    "price": 90,
+    "category": "Drinks",
+    "emoji": "🍹",
+    "image": "images/dishes/jaljeera.webp",
+    "alt": "Iced tangy green cumin cooler served with floating crisp boondi and mint sprig",
+    "dietary": ["Veg", "Vegan", "Jain", "Gluten-Free"],
+    "spice": "Medium",
+    "description": "Refreshing traditional digestive cooler prepared with roasted cumin, fresh mint, black salt, amchur (dried mango), and crispy boondi."
   }
 ];
 
-// App State
-const state = {
-  menuItems: [],
-  activeCategory: 'All',
-  activeDietary: 'All',
-  searchQuery: '',
-  cart: [] // Array of { id, name, price, emoji, quantity }
+// Application State
+const AppState = {
+  menu: [],
+  selectedCategory: 'All',
+  selectedDietary: 'All',
+  cart: {}, // { [dishId]: { item, quantity } }
+  activeModalDish: null
 };
 
-// DOM Elements
-const el = {
-  grid: document.getElementById('menu-items-grid'),
-  cartList: document.getElementById('cart-items-list'),
-  cartSubtotal: document.getElementById('cart-subtotal-val'),
-  cartTax: document.getElementById('cart-tax-val'),
-  cartGrandTotal: document.getElementById('cart-grand-total-val'),
-  navCartBadge: document.getElementById('nav-cart-badge'),
-  sidebarCartBadge: document.getElementById('sidebar-cart-badge'),
-  proceedBtn: document.getElementById('proceed-to-checkout-btn'),
-  clearCartBtn: document.getElementById('cart-clear-all-btn'),
+// DOM References
+const DOM = {
+  categoryTabs: document.getElementById('category-tabs'),
+  dietaryButtons: document.getElementById('dietary-buttons'),
+  dishesGrid: document.getElementById('dishes-grid'),
+  dishCounter: document.getElementById('dish-counter'),
+  menuTitle: document.getElementById('menu-current-title'),
+  emptyState: document.getElementById('empty-state'),
+  resetFiltersBtn: document.getElementById('reset-filters-btn'),
+  
+  // Cart
   cartToggleBtn: document.getElementById('cart-toggle-btn'),
-  searchInput: document.getElementById('menu-search-input'),
-  categoryBtns: document.querySelectorAll('.category-btn'),
-  dietaryBtns: document.querySelectorAll('.dietary-btn'),
+  cartCloseBtn: document.getElementById('cart-close-btn'),
+  cartDrawer: document.getElementById('cart-drawer'),
+  cartBackdrop: document.getElementById('cart-backdrop'),
+  cartItemsContainer: document.getElementById('cart-items-container'),
+  navCartBadge: document.getElementById('nav-cart-badge'),
+  billSubtotal: document.getElementById('bill-subtotal'),
+  billGst: document.getElementById('bill-gst'),
+  billGrandTotal: document.getElementById('bill-grand-total'),
+  checkoutOpenBtn: document.getElementById('checkout-open-btn'),
+  
+  // Detail Modal
+  detailModal: document.getElementById('detail-modal'),
+  detailModalClose: document.getElementById('detail-modal-close'),
+  detailModalImg: document.getElementById('detail-modal-img'),
+  detailModalEmoji: document.getElementById('detail-modal-emoji'),
+  detailModalName: document.getElementById('detail-modal-name'),
+  detailModalPrice: document.getElementById('detail-modal-price'),
+  detailModalDesc: document.getElementById('detail-modal-desc'),
+  detailTagsRow: document.getElementById('detail-tags-row'),
+  detailFssaiIndicator: document.getElementById('detail-fssai-indicator'),
+  detailSpiceLevel: document.getElementById('detail-spice-level'),
+  detailAddCartBtn: document.getElementById('detail-add-cart-btn'),
+  
   // Checkout Modal
-  checkoutOverlay: document.getElementById('checkout-modal-overlay'),
-  checkoutCloseBtn: document.getElementById('checkout-close-btn'),
+  checkoutModal: document.getElementById('checkout-modal'),
+  checkoutModalClose: document.getElementById('checkout-modal-close'),
   checkoutCancelBtn: document.getElementById('checkout-cancel-btn'),
   checkoutForm: document.getElementById('checkout-form'),
-  checkoutSummaryBox: document.getElementById('checkout-items-summary'),
-  checkoutFinalAmount: document.getElementById('checkout-final-amount'),
-  customerNameInput: document.getElementById('customer-name-input'),
-  tableNumberInput: document.getElementById('table-number-input'),
-  specialNotesInput: document.getElementById('special-notes-input'),
+  customerNameInput: document.getElementById('customer-name'),
+  tableNumberInput: document.getElementById('table-number'),
+  modalBillSubtotal: document.getElementById('modal-bill-subtotal'),
+  modalBillGst: document.getElementById('modal-bill-gst'),
+  modalBillTotal: document.getElementById('modal-bill-total'),
+  
   // Confirmation Modal
-  confOverlay: document.getElementById('confirmation-modal-overlay'),
-  confCloseBtn: document.getElementById('confirmation-close-btn'),
-  confDoneBtn: document.getElementById('confirmation-done-btn'),
-  confOrderId: document.getElementById('confirmed-order-id'),
-  confGuestName: document.getElementById('conf-guest-name'),
-  confTableNumber: document.getElementById('conf-table-number'),
-  confTotalAmount: document.getElementById('conf-total-amount'),
-  toast: document.getElementById('action-toast'),
-  toastMsg: document.getElementById('toast-message')
-};
-
-// Access AppLogic functions (provided by logic.js)
-const logic = window.AppLogic || {
-  filterMenu: (items) => items,
-  calculateCartTotal: (cart) => cart.reduce((s, i) => s + (i.price * i.quantity), 0),
-  calculateTotalQuantity: (cart) => cart.reduce((s, i) => s + i.quantity, 0),
-  generateOrderId: () => 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase()
+  confirmationModal: document.getElementById('confirmation-modal'),
+  confirmationCloseBtn: document.getElementById('confirmation-close-btn'),
+  receiptOrderId: document.getElementById('receipt-order-id'),
+  receiptCustomerName: document.getElementById('receipt-customer-name'),
+  receiptTableNum: document.getElementById('receipt-table-num'),
+  receiptPaymentMode: document.getElementById('receipt-payment-mode'),
+  receiptTimestamp: document.getElementById('receipt-timestamp'),
+  receiptGrandTotal: document.getElementById('receipt-grand-total')
 };
 
 /**
  * Initialize Application
  */
 async function initApp() {
+  loadCartFromStorage();
   await loadMenuData();
   setupEventListeners();
   renderMenu();
-  renderCart();
+  updateCartUI();
 }
 
 /**
- * Load menu data from menu.json or fallback
+ * Fetch menu.json with fallback
  */
 async function loadMenuData() {
   try {
     const res = await fetch('menu.json');
-    if (!res.ok) throw new Error('Network error');
-    state.menuItems = await res.json();
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    AppState.menu = await res.json();
   } catch (err) {
-    console.warn('Loading fallback menu data:', err);
-    state.menuItems = FALLBACK_MENU;
+    console.warn('Using embedded Desi Tadka menu fallback (Offline/CORS mode):', err);
+    AppState.menu = DESI_TADKA_FALLBACK;
   }
 }
 
 /**
- * Set up user interactions and listeners
- */
-function setupEventListeners() {
-  // Category tabs
-  el.categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      el.categoryBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      state.activeCategory = btn.dataset.category;
-      renderMenu();
-    });
-  });
-
-  // Dietary filter buttons
-  el.dietaryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      el.dietaryBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.activeDietary = btn.dataset.dietary;
-      renderMenu();
-    });
-  });
-
-  // Search input
-  el.searchInput.addEventListener('input', (e) => {
-    state.searchQuery = e.target.value.trim().toLowerCase();
-    renderMenu();
-  });
-
-  // Clear cart button
-  el.clearCartBtn.addEventListener('click', () => {
-    if (state.cart.length > 0 && confirm('Are you sure you want to clear your cart?')) {
-      state.cart = [];
-      renderCart();
-      renderMenu();
-      showToast('Cart cleared');
-    }
-  });
-
-  // Cart scroll on mobile
-  el.cartToggleBtn.addEventListener('click', () => {
-    document.getElementById('cart-panel-sidebar').scrollIntoView({ behavior: 'smooth' });
-  });
-
-  // Checkout modal openers / closers
-  el.proceedBtn.addEventListener('click', openCheckoutModal);
-  el.checkoutCloseBtn.addEventListener('click', closeCheckoutModal);
-  el.checkoutCancelBtn.addEventListener('click', closeCheckoutModal);
-  el.checkoutOverlay.addEventListener('click', (e) => {
-    if (e.target === el.checkoutOverlay) closeCheckoutModal();
-  });
-
-  // Checkout form submission
-  el.checkoutForm.addEventListener('submit', handleOrderSubmit);
-
-  // Confirmation modal closers
-  el.confCloseBtn.addEventListener('click', closeConfirmationModal);
-  el.confDoneBtn.addEventListener('click', closeConfirmationModal);
-  el.confOverlay.addEventListener('click', (e) => {
-    if (e.target === el.confOverlay) closeConfirmationModal();
-  });
-}
-
-/**
- * Filter items according to category, dietary tag, and search query
- */
-function getFilteredItems() {
-  let filtered = logic.filterMenu(state.menuItems, state.activeCategory, state.activeDietary);
-
-  if (state.searchQuery) {
-    filtered = filtered.filter(item => {
-      const matchName = item.name.toLowerCase().includes(state.searchQuery);
-      const matchDesc = item.description.toLowerCase().includes(state.searchQuery);
-      const matchCategory = item.category.toLowerCase().includes(state.searchQuery);
-      return matchName || matchDesc || matchCategory;
-    });
-  }
-
-  return filtered;
-}
-
-/**
- * Render menu cards into the grid
+ * Filter & Render Dishes
  */
 function renderMenu() {
-  const items = getFilteredItems();
+  const filtered = window.AppLogic.filterMenu(
+    AppState.menu,
+    AppState.selectedCategory,
+    AppState.selectedDietary
+  );
 
-  if (items.length === 0) {
-    el.grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🍽️</div>
-        <h3>No dishes found</h3>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">Try adjusting your category or dietary filter.</p>
+  DOM.dishCounter.textContent = `Showing ${filtered.length} item${filtered.length === 1 ? '' : 's'}`;
+  DOM.menuTitle.textContent = AppState.selectedCategory === 'All' 
+    ? 'Explore Our Menu' 
+    : `${AppState.selectedCategory} Selection`;
+
+  if (filtered.length === 0) {
+    DOM.dishesGrid.innerHTML = '';
+    DOM.emptyState.classList.remove('hidden');
+    return;
+  }
+
+  DOM.emptyState.classList.add('hidden');
+  DOM.dishesGrid.innerHTML = filtered.map(dish => createDishCardHtml(dish)).join('');
+}
+
+/**
+ * Create Dish Card HTML
+ */
+function createDishCardHtml(dish) {
+  const cartEntry = AppState.cart[dish.id];
+  const qty = cartEntry ? cartEntry.quantity : 0;
+  const isVeg = dish.dietary && dish.dietary.includes('Veg');
+  const fssaiClass = isVeg ? 'fssai-veg' : 'fssai-nonveg';
+  const spiceClass = `spice-${(dish.spice || 'medium').toLowerCase()}`;
+  const formattedPrice = window.AppLogic.formatINR(dish.price);
+
+  return `
+    <article class="dish-card" id="dish-card-${dish.id}" data-id="${dish.id}">
+      <div class="dish-image-wrapper" onclick="openDishDetail(${dish.id})">
+        <img 
+          src="${dish.image}" 
+          alt="${escapeHtml(dish.alt || dish.name)}" 
+          class="dish-card-img" 
+          loading="lazy" 
+          decoding="async"
+          onerror="handleImageFallback(this, '${dish.emoji}', '${escapeHtml(dish.category)}')"
+        >
+        <div class="dish-top-badges">
+          <div class="fssai-card-badge">
+            <span class="fssai-indicator ${fssaiClass}" title="${isVeg ? 'Vegetarian' : 'Non-Vegetarian'}">
+              <span class="fssai-dot"></span>
+            </span>
+          </div>
+          <span class="spice-tag ${spiceClass}">${dish.spice}</span>
+        </div>
+      </div>
+
+      <div class="dish-card-body">
+        <div class="dish-header-row">
+          <h4 class="dish-title">${escapeHtml(dish.name)}</h4>
+          <span class="dish-price">${formattedPrice}</span>
+        </div>
+        
+        <div class="dish-category-label">${escapeHtml(dish.category)}</div>
+        <p class="dish-description">${escapeHtml(dish.description)}</p>
+
+        <div class="dietary-tags-list">
+          ${dish.dietary.map(t => `<span class="mini-diet-tag">${escapeHtml(t)}</span>`).join('')}
+        </div>
+
+        <div class="dish-card-action">
+          ${qty > 0 ? `
+            <div class="card-qty-control">
+              <button class="qty-btn" onclick="updateItemQuantity(${dish.id}, -1)" aria-label="Decrease">&minus;</button>
+              <span class="qty-display">${qty} in order</span>
+              <button class="qty-btn" onclick="updateItemQuantity(${dish.id}, 1)" aria-label="Increase">+</button>
+            </div>
+          ` : `
+            <button class="add-btn" onclick="addToCart(${dish.id})">
+              <span>+ Add to Order</span>
+            </button>
+          `}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/**
+ * Image fallback on error: replaces img with emoji on saffron background
+ */
+function handleImageFallback(imgEl, emoji, category) {
+  const parent = imgEl.parentElement;
+  if (!parent) return;
+
+  const fallback = document.createElement('div');
+  fallback.className = 'dish-fallback-img';
+  fallback.innerHTML = `
+    <span class="dish-fallback-emoji">${emoji || '🍲'}</span>
+    <span class="dish-fallback-text">${category || 'Desi Tadka'}</span>
+  `;
+  parent.replaceChild(fallback, imgEl);
+}
+
+/**
+ * Open Dish Detail Modal
+ */
+function openDishDetail(dishId) {
+  const dish = AppState.menu.find(d => d.id === dishId);
+  if (!dish) return;
+
+  AppState.activeModalDish = dish;
+
+  DOM.detailModalImg.src = dish.image;
+  DOM.detailModalImg.alt = dish.alt;
+  DOM.detailModalEmoji.textContent = dish.emoji;
+  DOM.detailModalName.textContent = dish.name;
+  DOM.detailModalPrice.textContent = window.AppLogic.formatINR(dish.price);
+  DOM.detailModalDesc.textContent = dish.description;
+  DOM.detailSpiceLevel.textContent = dish.spice;
+
+  // FSSAI badge
+  const isVeg = dish.dietary.includes('Veg');
+  DOM.detailFssaiIndicator.className = `fssai-indicator ${isVeg ? 'fssai-veg' : 'fssai-nonveg'}`;
+
+  // Tags
+  DOM.detailTagsRow.innerHTML = dish.dietary
+    .map(t => `<span class="mini-diet-tag">${escapeHtml(t)}</span>`)
+    .join('');
+
+  DOM.detailModal.classList.remove('hidden');
+}
+
+function closeDishDetail() {
+  DOM.detailModal.classList.add('hidden');
+  AppState.activeModalDish = null;
+}
+
+/**
+ * Cart State Operations
+ */
+function addToCart(dishId) {
+  const dish = AppState.menu.find(d => d.id === dishId);
+  if (!dish) return;
+
+  if (AppState.cart[dishId]) {
+    AppState.cart[dishId].quantity += 1;
+  } else {
+    AppState.cart[dishId] = {
+      dish: dish,
+      price: dish.price,
+      quantity: 1
+    };
+  }
+
+  saveCartToStorage();
+  updateCartUI();
+  renderMenu();
+}
+
+function updateItemQuantity(dishId, change) {
+  if (!AppState.cart[dishId]) return;
+
+  AppState.cart[dishId].quantity += change;
+
+  if (AppState.cart[dishId].quantity <= 0) {
+    delete AppState.cart[dishId];
+  }
+
+  saveCartToStorage();
+  updateCartUI();
+  renderMenu();
+}
+
+/**
+ * Update Cart UI (drawer, badge count, subtotal, 5% GST, grand total)
+ */
+function updateCartUI() {
+  const cartEntries = Object.values(AppState.cart);
+  const totalCount = window.AppLogic.calculateTotalQuantity(cartEntries);
+  const subtotal = window.AppLogic.calculateCartSubtotal(cartEntries);
+  const gst = window.AppLogic.calculateGST(subtotal);
+  const grandTotal = window.AppLogic.calculateGrandTotal(subtotal, gst);
+
+  // Update Nav Badge
+  DOM.navCartBadge.textContent = totalCount;
+
+  // Update Drawer Bill
+  DOM.billSubtotal.textContent = window.AppLogic.formatINR(subtotal);
+  DOM.billGst.textContent = window.AppLogic.formatINR(gst);
+  DOM.billGrandTotal.textContent = window.AppLogic.formatINR(grandTotal);
+
+  DOM.checkoutOpenBtn.disabled = cartEntries.length === 0;
+
+  // Render Items inside drawer
+  if (cartEntries.length === 0) {
+    DOM.cartItemsContainer.innerHTML = `
+      <div class="cart-empty-text">
+        <span style="font-size:2.5rem; display:block; margin-bottom:0.5rem;">🍽️</span>
+        Your dining cart is empty.<br>Select royal dishes from our menu to start your order.
       </div>
     `;
     return;
   }
 
-  el.grid.innerHTML = items.map(dish => {
-    const cartItem = state.cart.find(c => c.id === dish.id);
-    const qty = cartItem ? cartItem.quantity : 0;
-
-    const dietaryBadges = (dish.dietary || []).map(tag => {
-      const tagClass = tag.toLowerCase().replace(/\s+/g, '-');
-      return `<span class="tag-badge ${tagClass}">${tag}</span>`;
-    }).join('');
-
-    const actionButtonHtml = qty > 0
-      ? `
-        <div class="card-qty-controls">
-          <button class="qty-mini-btn" onclick="updateItemQuantity(${dish.id}, -1)" aria-label="Decrease quantity of ${dish.name}">-</button>
-          <span class="qty-count">${qty}</span>
-          <button class="qty-mini-btn" onclick="updateItemQuantity(${dish.id}, 1)" aria-label="Increase quantity of ${dish.name}">+</button>
-        </div>
-      `
-      : `
-        <button class="add-btn" onclick="addItemToCart(${dish.id})" aria-label="Add ${dish.name} to order">
-          <span>+ Add</span>
-        </button>
-      `;
-
+  DOM.cartItemsContainer.innerHTML = cartEntries.map(entry => {
+    const d = entry.dish;
+    const itemTotal = entry.price * entry.quantity;
     return `
-      <article class="menu-card" id="dish-card-${dish.id}">
-        <div>
-          <div class="card-top">
-            <div class="card-emoji">${dish.emoji}</div>
-            <span class="card-category-badge">${dish.category}</span>
-          </div>
-          <h3 class="card-title">${dish.name}</h3>
-          <p class="card-desc">${dish.description}</p>
-          <div class="card-tags">
-            ${dietaryBadges}
-          </div>
+      <div class="cart-item-row" id="cart-item-${d.id}">
+        <img src="${d.image}" alt="${escapeHtml(d.name)}" class="cart-item-thumb" onerror="this.src='images/placeholder.svg'">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${escapeHtml(d.name)}</div>
+          <div class="cart-item-unit-price">${window.AppLogic.formatINR(entry.price)} each</div>
+          <div class="cart-item-calc">${window.AppLogic.formatINR(itemTotal)}</div>
         </div>
-        <div class="card-footer">
-          <div class="card-price">$${dish.price.toFixed(2)}</div>
-          ${actionButtonHtml}
+        <div class="cart-item-actions">
+          <button class="cart-mini-qty-btn" onclick="updateItemQuantity(${d.id}, -1)">&minus;</button>
+          <span class="cart-mini-qty">${entry.quantity}</span>
+          <button class="cart-mini-qty-btn" onclick="updateItemQuantity(${d.id}, 1)">+</button>
         </div>
-      </article>
+      </div>
     `;
   }).join('');
 }
 
 /**
- * Add a dish to cart
+ * Storage Helpers
  */
-window.addItemToCart = function(dishId) {
-  const dish = state.menuItems.find(d => d.id === dishId);
-  if (!dish) return;
-
-  const existing = state.cart.find(c => c.id === dishId);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    state.cart.push({
-      id: dish.id,
-      name: dish.name,
-      price: dish.price,
-      emoji: dish.emoji,
-      quantity: 1
-    });
+function saveCartToStorage() {
+  try {
+    localStorage.setItem('desi_tadka_cart', JSON.stringify(AppState.cart));
+  } catch (e) {
+    // Ignore storage errors in restricted iframe
   }
+}
 
-  renderCart();
-  renderMenu();
-  showToast(`Added ${dish.name} to order`);
-};
-
-/**
- * Increment or decrement item quantity in cart
- */
-window.updateItemQuantity = function(dishId, delta) {
-  const index = state.cart.findIndex(c => c.id === dishId);
-  if (index === -1) return;
-
-  state.cart[index].quantity += delta;
-  if (state.cart[index].quantity <= 0) {
-    state.cart.splice(index, 1);
+function loadCartFromStorage() {
+  try {
+    const raw = localStorage.getItem('desi_tadka_cart');
+    if (raw) AppState.cart = JSON.parse(raw);
+  } catch (e) {
+    AppState.cart = {};
   }
-
-  renderCart();
-  renderMenu();
-};
+}
 
 /**
- * Remove an item completely from cart
+ * Checkout Workflow
  */
-window.removeItemFromCart = function(dishId) {
-  state.cart = state.cart.filter(c => c.id !== dishId);
-  renderCart();
-  renderMenu();
-  showToast('Item removed');
-};
+function openCheckoutModal() {
+  const cartEntries = Object.values(AppState.cart);
+  if (cartEntries.length === 0) return;
 
-/**
- * Render the live cart sidebar
- */
-function renderCart() {
-  const totalQty = logic.calculateTotalQuantity(state.cart);
-  const subtotal = logic.calculateCartTotal(state.cart);
-  const tax = Math.round((subtotal * 0.08 + Number.EPSILON) * 100) / 100;
-  const grandTotal = Math.round(((subtotal + tax) + Number.EPSILON) * 100) / 100;
+  const subtotal = window.AppLogic.calculateCartSubtotal(cartEntries);
+  const gst = window.AppLogic.calculateGST(subtotal);
+  const grandTotal = window.AppLogic.calculateGrandTotal(subtotal, gst);
 
-  // Update badges
-  el.navCartBadge.textContent = totalQty;
-  el.sidebarCartBadge.textContent = totalQty;
+  DOM.modalBillSubtotal.textContent = window.AppLogic.formatINR(subtotal);
+  DOM.modalBillGst.textContent = window.AppLogic.formatINR(gst);
+  DOM.modalBillTotal.textContent = window.AppLogic.formatINR(grandTotal);
 
-  // Update summary numbers
-  el.cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
-  el.cartTax.textContent = `$${tax.toFixed(2)}`;
-  el.cartGrandTotal.textContent = `$${grandTotal.toFixed(2)}`;
+  DOM.checkoutModal.classList.remove('hidden');
+  closeCartDrawer();
+}
 
-  // Enable/disable checkout button
-  el.proceedBtn.disabled = state.cart.length === 0;
+function handleCheckoutSubmit(e) {
+  e.preventDefault();
 
-  if (state.cart.length === 0) {
-    el.cartList.innerHTML = `
-      <div class="cart-empty-message">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;">🛒</div>
-        <p>Your cart is empty.</p>
-        <p style="font-size: 0.8rem; margin-top: 0.25rem;">Select dishes to begin ordering.</p>
-      </div>
-    `;
+  const customerName = DOM.customerNameInput.value.trim();
+  const tableNumber = DOM.tableNumberInput.value.trim();
+  const paymentMode = (document.querySelector('input[name="paymentMode"]:checked') || {}).value || 'UPI';
+
+  if (!customerName || !tableNumber) {
+    alert('Please provide your name and table number.');
     return;
   }
 
-  el.cartList.innerHTML = state.cart.map(item => `
-    <div class="cart-item" id="cart-item-${item.id}">
-      <div class="cart-item-info">
-        <span class="cart-item-emoji">${item.emoji}</span>
-        <div class="cart-item-meta">
-          <div class="cart-item-name" title="${item.name}">${item.name}</div>
-          <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
-        </div>
-      </div>
-      <div class="cart-item-controls">
-        <button class="cart-qty-btn" onclick="updateItemQuantity(${item.id}, -1)" aria-label="Decrease quantity">-</button>
-        <span class="cart-item-qty">${item.quantity}</span>
-        <button class="cart-qty-btn" onclick="updateItemQuantity(${item.id}, 1)" aria-label="Increase quantity">+</button>
-      </div>
-      <div class="cart-item-subtotal">$${(item.price * item.quantity).toFixed(2)}</div>
-    </div>
-  `).join('');
-}
+  const cartEntries = Object.values(AppState.cart);
+  const subtotal = window.AppLogic.calculateCartSubtotal(cartEntries);
+  const gst = window.AppLogic.calculateGST(subtotal);
+  const grandTotal = window.AppLogic.calculateGrandTotal(subtotal, gst);
+  const orderId = window.AppLogic.generateOrderId('DT');
+  const now = new Date().toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
 
-/**
- * Open Checkout Modal
- */
-function openCheckoutModal() {
-  if (state.cart.length === 0) return;
+  // Populate Confirmation Receipt
+  DOM.receiptOrderId.textContent = orderId;
+  DOM.receiptCustomerName.textContent = customerName;
+  DOM.receiptTableNum.textContent = `Table #${tableNumber}`;
+  DOM.receiptPaymentMode.textContent = paymentMode;
+  DOM.receiptTimestamp.textContent = now;
+  DOM.receiptGrandTotal.textContent = window.AppLogic.formatINR(grandTotal);
 
-  const subtotal = logic.calculateCartTotal(state.cart);
-  const tax = Math.round((subtotal * 0.08 + Number.EPSILON) * 100) / 100;
-  const grandTotal = Math.round(((subtotal + tax) + Number.EPSILON) * 100) / 100;
+  // Close checkout modal & show confirmation
+  DOM.checkoutModal.classList.add('hidden');
+  DOM.confirmationModal.classList.remove('hidden');
 
-  el.checkoutSummaryBox.innerHTML = state.cart.map(i => `
-    <div class="order-review-item">
-      <span>${i.emoji} ${i.name} &times; ${i.quantity}</span>
-      <strong>$${(i.price * i.quantity).toFixed(2)}</strong>
-    </div>
-  `).join('') + `
-    <div class="order-review-item" style="color: var(--text-dim); margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--border-subtle);">
-      <span>Subtotal</span>
-      <span>$${subtotal.toFixed(2)}</span>
-    </div>
-    <div class="order-review-item" style="color: var(--text-dim);">
-      <span>Taxes & Service (8%)</span>
-      <span>$${tax.toFixed(2)}</span>
-    </div>
-  `;
-
-  el.checkoutFinalAmount.textContent = `$${grandTotal.toFixed(2)}`;
-  el.checkoutOverlay.classList.add('active');
-  el.customerNameInput.focus();
-}
-
-/**
- * Close Checkout Modal
- */
-function closeCheckoutModal() {
-  el.checkoutOverlay.classList.remove('active');
-}
-
-/**
- * Handle checkout submission and order placement
- */
-function handleOrderSubmit(e) {
-  e.preventDefault();
-
-  const customerName = el.customerNameInput.value.trim();
-  const tableNumber = el.tableNumberInput.value.trim();
-
-  if (!customerName || !tableNumber) return;
-
-  const subtotal = logic.calculateCartTotal(state.cart);
-  const tax = Math.round((subtotal * 0.08 + Number.EPSILON) * 100) / 100;
-  const grandTotal = `$${(subtotal + tax).toFixed(2)}`;
-
-  // Generate order reference
-  const orderId = logic.generateOrderId();
-
-  // Populate confirmation modal
-  el.confOrderId.textContent = orderId;
-  el.confGuestName.textContent = customerName;
-  el.confTableNumber.textContent = tableNumber;
-  el.confTotalAmount.textContent = grandTotal;
-
-  // Reset form and cart
-  el.checkoutForm.reset();
-  state.cart = [];
-  closeCheckoutModal();
-  renderCart();
+  // Clear Cart
+  AppState.cart = {};
+  saveCartToStorage();
+  updateCartUI();
   renderMenu();
-
-  // Show confirmation modal
-  el.confOverlay.classList.add('active');
+  DOM.checkoutForm.reset();
 }
 
 /**
- * Close confirmation modal
+ * Cart Drawer Open / Close
  */
-function closeConfirmationModal() {
-  el.confOverlay.classList.remove('active');
+function openCartDrawer() {
+  DOM.cartDrawer.classList.add('open');
+  DOM.cartBackdrop.classList.add('open');
+}
+
+function closeCartDrawer() {
+  DOM.cartDrawer.classList.remove('open');
+  DOM.cartBackdrop.classList.remove('open');
 }
 
 /**
- * Micro Toast Notification helper
+ * Setup Event Listeners
  */
-let toastTimeout;
-function showToast(message) {
-  if (toastTimeout) clearTimeout(toastTimeout);
-  el.toastMsg.textContent = message;
-  el.toast.classList.add('show');
-  toastTimeout = setTimeout(() => {
-    el.toast.classList.remove('show');
-  }, 2500);
+function setupEventListeners() {
+  // Category Tabs
+  DOM.categoryTabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+
+    DOM.categoryTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    AppState.selectedCategory = btn.dataset.category;
+    renderMenu();
+  });
+
+  // Dietary Buttons
+  DOM.dietaryButtons.addEventListener('click', (e) => {
+    const btn = e.target.closest('.diet-btn');
+    if (!btn) return;
+
+    DOM.dietaryButtons.querySelectorAll('.diet-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    AppState.selectedDietary = btn.dataset.dietary;
+    renderMenu();
+  });
+
+  // Reset Filters
+  DOM.resetFiltersBtn.addEventListener('click', () => {
+    AppState.selectedCategory = 'All';
+    AppState.selectedDietary = 'All';
+
+    DOM.categoryTabs.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.category === 'All');
+    });
+    DOM.dietaryButtons.querySelectorAll('.diet-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.dietary === 'All');
+    });
+
+    renderMenu();
+  });
+
+  // Cart Drawer
+  DOM.cartToggleBtn.addEventListener('click', openCartDrawer);
+  DOM.cartCloseBtn.addEventListener('click', closeCartDrawer);
+  DOM.cartBackdrop.addEventListener('click', closeCartDrawer);
+
+  // Detail Modal
+  DOM.detailModalClose.addEventListener('click', closeDishDetail);
+  DOM.detailModal.addEventListener('click', (e) => {
+    if (e.target === DOM.detailModal) closeDishDetail();
+  });
+  DOM.detailAddCartBtn.addEventListener('click', () => {
+    if (AppState.activeModalDish) {
+      addToCart(AppState.activeModalDish.id);
+      closeDishDetail();
+    }
+  });
+
+  // Checkout Modal
+  DOM.checkoutOpenBtn.addEventListener('click', openCheckoutModal);
+  DOM.checkoutModalClose.addEventListener('click', () => DOM.checkoutModal.classList.add('hidden'));
+  DOM.checkoutCancelBtn.addEventListener('click', () => {
+    DOM.checkoutModal.classList.add('hidden');
+    openCartDrawer();
+  });
+  DOM.checkoutForm.addEventListener('submit', handleCheckoutSubmit);
+
+  // Confirmation Modal Close
+  DOM.confirmationCloseBtn.addEventListener('click', () => {
+    DOM.confirmationModal.classList.add('hidden');
+  });
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCartDrawer();
+      closeDishDetail();
+      DOM.checkoutModal.classList.add('hidden');
+      DOM.confirmationModal.classList.add('hidden');
+    }
+  });
 }
 
-// Start application when DOM is ready
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[&<>"']/g, function(m) {
+    switch (m) {
+      case '&': return '&amp;';
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '"': return '&quot;';
+      case "'": return '&#039;';
+      default: return m;
+    }
+  });
+}
+
+// Global exposure for inline events
+window.addToCart = addToCart;
+window.updateItemQuantity = updateItemQuantity;
+window.openDishDetail = openDishDetail;
+window.handleImageFallback = handleImageFallback;
+
+// Start App on DOM Ready
 document.addEventListener('DOMContentLoaded', initApp);

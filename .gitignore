@@ -1,6 +1,9 @@
 # ==============================================================================
-# Restaurant Menu & Order Visualizer - DevOps GitIgnore Configuration
+# Desi Tadka: Restaurant Menu & Order Visualizer - DevOps GitIgnore
 # ==============================================================================
+
+# Raw Image Assets (Commit only optimized WebP in app/images/dishes/)
+app/images/raw/
 
 # Node / NPM
 node_modules/
